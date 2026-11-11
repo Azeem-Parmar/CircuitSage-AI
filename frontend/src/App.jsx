@@ -8,7 +8,7 @@ import {
 import './App.css';
 import ComponentLibrary from './components/ComponentLibrary';
 import WaveformStudio from './components/WaveformStudio';
-
+import CircuitBuilder from './components/CircuitBuilder';
 
 function App() {
   const [activeTab, setActiveTab] = useState('Overview');
@@ -67,6 +67,7 @@ function App() {
   const navigation = [
     { name: 'Overview', icon: LayoutDashboard },
     { name: 'Circuit Analyzer', icon: CircuitBoard },
+    { name: 'Circuit Builder', icon: CircuitBoard },
     { name: 'Components', icon: Cpu },
     { name: 'Waveform Studio', icon: Waves },
     { name: 'Documentation', icon: BookOpen },
@@ -318,10 +319,16 @@ function App() {
            <WaveformStudio />
         )}
 
+         {activeTab === 'Circuit Builder' && (
+           <CircuitBuilder />
+        )}
+
+
          {activeTab !== 'Overview' && 
            activeTab !== 'Circuit Analyzer' &&
            activeTab !== 'Components' &&
-           activeTab !== 'Waveform Studio' &&  (
+           activeTab !== 'Waveform Studio' && 
+           activeTab !== 'Circuit Builder' &&  (
           <div className="page-content placeholder-page">
             <div className="eyebrow">CIRCUITSAGE AI / WORKSPACE</div>
             <div className="placeholder-icon"><CircuitBoard size={35} /></div>
