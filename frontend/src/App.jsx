@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import './App.css';
 import ComponentLibrary from './components/ComponentLibrary';
+import WaveformStudio from './components/WaveformStudio';
+
 
 function App() {
   const [activeTab, setActiveTab] = useState('Overview');
@@ -312,9 +314,14 @@ function App() {
            <ComponentLibrary />
         )}
 
+         {activeTab === 'Waveform Studio' && (
+           <WaveformStudio />
+        )}
+
          {activeTab !== 'Overview' && 
            activeTab !== 'Circuit Analyzer' &&
-           activeTab !== 'Components' && (
+           activeTab !== 'Components' &&
+           activeTab !== 'Waveform Studio' &&  (
           <div className="page-content placeholder-page">
             <div className="eyebrow">CIRCUITSAGE AI / WORKSPACE</div>
             <div className="placeholder-icon"><CircuitBoard size={35} /></div>
