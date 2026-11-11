@@ -162,3 +162,389 @@ h1 span { color: #70b5ff; }
   .secondary-button { margin-left: 56px; }
   .footer { padding: 15px 17px; gap: 10px; flex-wrap: wrap; }
 }
+
+/* ===== COMPONENT LIBRARY ===== */
+
+.component-page {
+  animation: componentFadeIn 0.25s ease;
+}
+
+@keyframes componentFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.component-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  margin-bottom: 23px;
+  background: #111c30;
+  border: 1px solid #26354d;
+  border-radius: 11px;
+}
+
+.component-summary-icon {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #30244e;
+  color: #c0a3ff;
+}
+
+.component-summary h3 {
+  font-size: 15px;
+  margin: 0 0 5px;
+}
+
+.component-summary p {
+  font-size: 11px;
+  color: #8999b0;
+  margin: 0;
+}
+
+.component-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 27px;
+}
+
+.component-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #101a2c;
+  border: 1px solid #293b54;
+  border-radius: 9px;
+  padding: 0 13px;
+  color: #8195b0;
+}
+
+.component-search:focus-within {
+  border-color: #4c9ce9;
+}
+
+.component-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: #e8edf8;
+  font-size: 12px;
+}
+
+.component-search input::placeholder {
+  color: #71829b;
+}
+
+.clear-search {
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.category-button {
+  padding: 9px 15px;
+  border: 1px solid #293a52;
+  border-radius: 7px;
+  background: #111c30;
+  color: #9aabc2;
+  font-size: 11px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.category-button:hover {
+  border-color: #4b82b8;
+  color: #dceaff;
+}
+
+.category-button.selected {
+  background: #18365a;
+  border-color: #3985d3;
+  color: #82c2ff;
+}
+
+.component-results-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.component-results-heading h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.component-results-heading span {
+  font-size: 11px;
+  color: #8292aa;
+}
+
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.component-card {
+  min-width: 0;
+  padding: 18px;
+  background: #111c30;
+  border: 1px solid #26364f;
+  border-radius: 11px;
+  transition: 0.2s;
+}
+
+.component-card:hover {
+  transform: translateY(-3px);
+  border-color: #477eaf;
+  background: #14243a;
+}
+
+.component-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 8px;
+}
+
+.component-symbol,
+.component-symbol-large {
+  display: grid;
+  place-items: center;
+  background: #18365a;
+  border: 1px solid #294d75;
+  color: #82c2ff;
+  font-weight: 700;
+}
+
+.component-symbol {
+  width: 43px;
+  height: 43px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.component-category {
+  padding: 5px 8px;
+  background: #202b40;
+  color: #a9bbd2;
+  border-radius: 5px;
+  font-size: 9px;
+}
+
+.component-card h3 {
+  font-size: 14px;
+  margin: 0 0 9px;
+}
+
+.component-card > p {
+  min-height: 55px;
+  color: #8999b0;
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+.component-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 13px;
+  border-top: 1px solid #26354d;
+}
+
+.component-card-bottom > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #8fa2bd;
+  font-size: 10px;
+}
+
+.component-card-bottom button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 9px;
+  border: 1px solid #31587f;
+  border-radius: 6px;
+  background: #1a3453;
+  color: #8bc5ff;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.component-card-bottom button:hover {
+  background: #24476d;
+}
+
+.component-empty {
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #82bfff;
+}
+
+.component-empty h3 {
+  color: #e8edf8;
+  font-size: 15px;
+  margin: 14px 0 7px;
+}
+
+.component-empty p {
+  color: #8999b0;
+  font-size: 11px;
+  margin: 0 0 16px;
+}
+
+.component-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 25px;
+  padding: 9px 12px;
+  border: 1px solid #293b54;
+  border-radius: 7px;
+  background: #111c30;
+  color: #8bc5ff;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.component-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.component-symbol-large {
+  width: 75px;
+  height: 75px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  font-size: 19px;
+}
+
+.component-detail-heading h1 {
+  margin-bottom: 8px;
+}
+
+.component-detail-heading p {
+  color: #91a0b7;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.component-info-panel {
+  margin-bottom: 17px;
+}
+
+.component-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: #83bdff;
+}
+
+.component-section-title h3 {
+  color: #e8edf8;
+  font-size: 14px;
+  margin: 0;
+}
+
+.component-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.component-spec {
+  padding: 14px;
+  background: #0c1628;
+  border: 1px solid #26354d;
+  border-radius: 8px;
+}
+
+.component-spec span,
+.component-spec strong {
+  display: block;
+}
+
+.component-spec span {
+  color: #8596ae;
+  font-size: 10px;
+  margin-bottom: 7px;
+}
+
+.component-spec strong {
+  color: #e3edfa;
+  font-size: 12px;
+}
+
+.application-list {
+  display: grid;
+  gap: 12px;
+}
+
+.application-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #b5c3d7;
+  font-size: 12px;
+}
+
+.application-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #53d6a2;
+}
+
+@media (max-width: 1050px) {
+  .component-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .component-grid,
+  .component-spec-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .component-detail-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .component-results-heading {
+    gap: 10px;
+  }
+}

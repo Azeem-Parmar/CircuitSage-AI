@@ -6,6 +6,7 @@ import {
   CheckCircle2, Lightbulb, Gauge
 } from 'lucide-react';
 import './App.css';
+import ComponentLibrary from './components/ComponentLibrary';
 
 function App() {
   const [activeTab, setActiveTab] = useState('Overview');
@@ -307,7 +308,13 @@ function App() {
           </div>
         )}
 
-        {activeTab !== 'Overview' && activeTab !== 'Circuit Analyzer' && (
+         {activeTab === 'Components' && (
+           <ComponentLibrary />
+        )}
+
+         {activeTab !== 'Overview' && 
+           activeTab !== 'Circuit Analyzer' &&
+           activeTab !== 'Components' && (
           <div className="page-content placeholder-page">
             <div className="eyebrow">CIRCUITSAGE AI / WORKSPACE</div>
             <div className="placeholder-icon"><CircuitBoard size={35} /></div>
