@@ -124,4 +124,90 @@ describe('Circuit Engine', () => {
       ).toThrow('Unsupported connection type.');
     });
   });
+
+
+  describe('Advanced Input Validation', () => {
+    it('rejects a null resistor', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: 12,
+          resistors: [null],
+        })
+      ).toThrow('Resistor 1 is invalid.');
+    });
+
+    it('rejects an array used as a resistor', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: 12,
+          resistors: [[]],
+        })
+      ).toThrow('Resistor 1 is invalid.');
+    });
+
+    it('rejects a non-string resistor name', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: 12,
+          resistors: [{ name: 123, resistance: 100 }],
+        })
+      ).toThrow('Resistor 1 has an invalid name.');
+    });
+
+    it('rejects an empty resistor name', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: 12,
+          resistors: [{ name: '   ', resistance: 100 }],
+        })
+      ).toThrow('Resistor 1 has an invalid name.');
+    });
+
+    it('rejects series resistance overflow', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: 12,
+          resistors: [
+            { resistance: Number.MAX_VALUE },
+            { resistance: Number.MAX_VALUE },
+          ],
+          connection: 'series',
+        })
+      ).toThrow('Unable to calculate a valid total resistance.');
+    });
+
+    it('rejects calculations that produce infinite power', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: Number.MAX_VALUE,
+          resistors: [{ resistance: 1 }],
+          connection: 'series',
+        })
+      ).toThrow(
+        'Calculated values for resistor 1 are outside the supported numerical range.'
+      );
+    });
+
+    it('rejects calculations where current underflows to zero', () => {
+      expect(() =>
+        analyzeCircuit({
+          voltage: Number.MIN_VALUE,
+          resistors: [{ resistance: Number.MAX_VALUE }],
+          connection: 'series',
+        })
+      ).toThrow(
+        'Circuit current is outside the supported numerical range.'
+      );
+    });
+
+    it('trims whitespace from valid resistor names', () => {
+      const result = analyzeCircuit({
+        voltage: 12,
+        resistors: [{ name: ' R1 ', resistance: 100 }],
+      });
+
+      expect(result.resistors[0].name).toBe('R1');
+    });
+  });
+
 });

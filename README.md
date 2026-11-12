@@ -38,7 +38,7 @@ The project combines a React frontend with a Python FastAPI backend to provide p
 
 ### 4. Circuit Builder
 
-An interactive circuit analysis workspace offering three analysis modes.
+An interactive circuit analysis workspace offering four analysis modes.
 
 **Basic Analysis**
 - Create basic DC resistor networks.
@@ -68,6 +68,15 @@ An interactive circuit analysis workspace offering three analysis modes.
 - Verify total resistor power against source power supplied.
 - Includes single-mesh, two-mesh, and three-mesh examples.
 
+**Mixed Analysis**
+- Analyze nested series-parallel DC resistor networks.
+- Supports combinations of series and parallel resistor groups.
+- Calculate equivalent resistance, total current, and total power.
+- Calculate individual resistor voltage drops, currents, and power.
+- Display a mixed circuit schematic.
+- Validate resistor values, supply voltage, network structure, and duplicate resistor names.
+- Includes a series-parallel example with R1 in series with R2 and R3 in parallel.
+
 **Numerical Solver and Electrical Verification**
 - Shared linear-system solver using Gaussian elimination with scaled partial pivoting.
 - Matrix and input validation.
@@ -75,6 +84,7 @@ An interactive circuit analysis workspace offering three analysis modes.
 - Ground-connectivity validation in nodal analysis.
 - KCL residual verification in nodal analysis.
 - Power balance verification in nodal and mesh analysis.
+- Numerical range validation in circuit calculations.
 
 **Current Limitations**
 - The advanced analysis engines currently support DC resistive networks and ideal independent voltage sources.
@@ -127,12 +137,16 @@ CircuitSage-AI/
 │   │   │   ├── CircuitBuilder.jsx
 │   │   │   ├── NodalAnalysisPanel.jsx
 │   │   │   ├── MeshAnalysisPanel.jsx
+│   │   │   ├── MixedAnalysisPanel.jsx
 │   │   │   ├── ComponentLibrary.jsx
 │   │   │   └── WaveformStudio.jsx
 │   │   │
 │   │   ├── circuit/
 │   │   │   ├── circuitEngine.js
+│   │   │   ├── mixedCircuitEngine.js
 │   │   │   └── __tests__/
+│   │   │       ├── circuitEngine.test.js
+│   │   │       └── mixedCircuitEngine.test.js
 │   │   │
 │   │   ├── advanced-circuit/
 │   │   │   ├── advancedCircuitEngine.js
@@ -238,6 +252,7 @@ The project currently implements calculations based on:
 - Ohm's Law
 - Electrical Power
 - Series and Parallel Resistance
+- Mixed Series-Parallel Networks
 - Voltage Division
 - Current Distribution
 - Kirchhoff's Current Law (KCL)
@@ -253,8 +268,9 @@ The project currently implements calculations based on:
 The frontend has undergone automated and manual testing.
 
 **Automated testing**
-- 41 automated tests across 5 test files.
+- 58 automated tests across 6 test files.
 - Basic circuit engine tests.
+- Mixed circuit engine tests.
 - Advanced circuit analysis engine tests.
 - Mesh analysis engine tests.
 - Shared numerical solver tests.
@@ -271,6 +287,9 @@ The frontend has undergone automated and manual testing.
 - Nodal analysis and node voltage verification.
 - Mesh current and shared resistor calculations.
 - Predefined single, two, and three-mesh examples.
+- Mixed series-parallel circuit calculations.
+- Invalid voltage and resistor input validation.
+- Reset behavior and result clearing.
 - KCL and electrical power balance checks.
 - Ground-connectivity validation.
 - Waveform generation and parameter testing.
@@ -283,7 +302,7 @@ cd frontend
 
 npm run lint
 
-npm run test:run
+npm test -- --run
 
 npm run build
 ```
@@ -298,11 +317,14 @@ npm run build
 - [x] Automated unit testing
 - [x] Modified Nodal Analysis
 - [x] Mesh Current Analysis
+- [x] Mixed Series-Parallel Circuit Analysis
 - [x] KCL and KVL-based circuit calculations
 - [x] Electrical power balance verification
 - [x] Shared numerical solver and circuit validation
 - [x] Predefined circuit examples
-- [ ] Advanced circuit simulation
+- [x] Basic and mixed circuit input validation
+- [x] Responsive circuit analysis interface
+- [ ] General-purpose advanced circuit simulation
 - [ ] AC circuit analysis
 - [ ] Transient analysis
 - [ ] Online deployment
