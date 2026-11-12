@@ -1248,3 +1248,264 @@ h1 span { color: #70b5ff; }
     font-size: 9px;
   }
 }
+
+/* ================================
+   DAY 6 - NODAL ANALYSIS WORKSPACE
+================================ */
+
+.nodal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.nodal-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 1px solid rgba(96, 173, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(96, 173, 255, 0.07);
+  color: #b9d9ff;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nodal-info svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #60adff;
+}
+
+.nodal-ground-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-width: 320px;
+}
+
+.nodal-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nodal-section-heading h3,
+.nodal-results h4 {
+  margin: 0;
+  color: #e8edf8;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.nodal-component-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nodal-component-row {
+  display: grid;
+  grid-template-columns: 100px repeat(3, minmax(100px, 1fr)) 38px;
+  align-items: end;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #26354d;
+  border-radius: 12px;
+  background: #111c30;
+}
+
+.nodal-component-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-self: center;
+}
+
+.nodal-component-title strong {
+  color: #82c2ff;
+  font-size: 14px;
+}
+
+.nodal-component-title span {
+  color: #8190a8;
+  font-size: 11px;
+}
+
+.nodal-component-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #aab8cc;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.nodal-component-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #34445e;
+  border-radius: 8px;
+  outline: none;
+  background: #0b1425;
+  color: #e8edf8;
+  font-size: 13px;
+}
+
+.nodal-component-row input:focus {
+  border-color: #60adff;
+}
+
+.nodal-component-row .circuit-remove-button {
+  width: 36px;
+  height: 38px;
+}
+
+.nodal-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #26354d;
+  border-radius: 14px;
+  background: #111c30;
+}
+
+.nodal-results-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #55d9a5;
+}
+
+.nodal-results-heading h3 {
+  margin: 0;
+  color: #e8edf8;
+  font-size: 17px;
+}
+
+.nodal-results h4 {
+  margin-top: 8px;
+}
+
+.nodal-result-table {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #26354d;
+  border-radius: 9px;
+}
+
+.nodal-table-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(3, minmax(100px, 1fr));
+  gap: 12px;
+  min-width: 520px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #26354d;
+  color: #c4d0e0;
+  font-size: 12px;
+}
+
+.nodal-table-row:last-child {
+  border-bottom: none;
+}
+
+.nodal-table-header {
+  background: #192840;
+  color: #82c2ff;
+  font-weight: 650;
+}
+
+.nodal-verification-note {
+  margin: 0;
+  color: #9aacc2;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 850px) {
+  .nodal-component-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nodal-component-title {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 500px) {
+  .nodal-results {
+    padding: 14px;
+  }
+
+  .nodal-component-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nodal-component-title {
+    grid-column: auto;
+  }
+
+  .nodal-section-heading {
+    align-items: flex-start;
+  }
+}
+
+/* DAY 6 - CIRCUIT ANALYSIS MODE SELECTOR */
+
+.circuit-mode-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding: 7px;
+  width: fit-content;
+  max-width: 100%;
+  background: #111c30;
+  border: 1px solid #26354d;
+  border-radius: 12px;
+}
+
+.circuit-mode-selector button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 17px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #9aacc2;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.circuit-mode-selector button:hover {
+  color: #e8edf8;
+  background: #1b2a41;
+}
+
+.circuit-mode-selector button.active {
+  color: #82c2ff;
+  background: rgba(96, 173, 255, 0.12);
+  border-color: rgba(96, 173, 255, 0.3);
+}
+
+@media (max-width: 500px) {
+  .circuit-mode-selector {
+    width: 100%;
+  }
+
+  .circuit-mode-selector button {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
