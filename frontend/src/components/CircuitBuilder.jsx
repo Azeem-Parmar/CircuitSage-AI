@@ -20,6 +20,43 @@ function CircuitBuilder() {
 
   const [voltage, setVoltage] = useState(12);
   const [connection, setConnection] = useState('series');
+  const [selectedExample, setSelectedExample] = useState('');
+
+  const loadExample = (example) => {
+    const examples = {
+      series_basic: {
+        voltage: 12,
+        connection: 'series',
+        resistors: [100, 200],
+      },
+      parallel_basic: {
+        voltage: 12,
+        connection: 'parallel',
+        resistors: [100, 200, 300],
+      },
+      series_three: {
+        voltage: 24,
+        connection: 'series',
+        resistors: [220, 330, 470],
+      },
+    };
+
+    const preset = examples[example];
+    if (!preset) return;
+
+    setVoltage(preset.voltage);
+    setConnection(preset.connection);
+    setResistors(
+      preset.resistors.map((resistance, index) => ({
+        id: index + 1,
+        name: `R${index + 1}`,
+        resistance,
+      }))
+    );
+    setResults(null);
+    setError('');
+    setSelectedExample(example);
+  };
 
   const [resistors, setResistors] = useState([
     { id: 1, name: 'R1', resistance: 100 },
@@ -165,6 +202,21 @@ function CircuitBuilder() {
                   <p>Set your source and resistor values</p>
                 </div>
               </div>
+
+              <label className="circuit-field-label">
+                Load Example Circuit
+              </label>
+
+              <select
+                className="circuit-number-input"
+                value={selectedExample}
+                onChange={(event) => loadExample(event.target.value)}
+              >
+                <option value="">Choose an example...</option>
+                <option value="series_basic">Series Circuit — 2 Resistors</option>
+                <option value="parallel_basic">Parallel Circuit — 3 Resistors</option>
+                <option value="series_three">Series Circuit — 3 Resistors</option>
+              </select>
 
               <label className="circuit-field-label">
                 Supply Voltage (V)

@@ -40,6 +40,95 @@ export default function MeshAnalysisPanel() {
   const [meshes, setMeshes] = useState(createInitialMeshes);
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
+  const [selectedExample, setSelectedExample] = useState('two_mesh');
+
+  const loadExample = (example) => {
+    const examples = {
+      single_mesh: [
+        {
+          id: 1,
+          name: 'Mesh 1',
+          resistors: [
+            { id: '1-r1', name: 'R1', resistance: 4, direction: 1 },
+            { id: '1-r2', name: 'R2', resistance: 6, direction: 1 },
+          ],
+          voltageSources: [
+            { id: '1-v1', name: 'V1', voltageRise: 10 },
+          ],
+        },
+      ],
+      two_mesh: [
+        {
+          id: 1,
+          name: 'Mesh 1',
+          resistors: [
+            { id: '1-r1', name: 'R1', resistance: 2, direction: 1 },
+            { id: '1-r2', name: 'Rshared', resistance: 4, direction: 1 },
+          ],
+          voltageSources: [
+            { id: '1-v1', name: 'V1', voltageRise: 10 },
+          ],
+        },
+        {
+          id: 2,
+          name: 'Mesh 2',
+          resistors: [
+            { id: '2-r1', name: 'Rshared', resistance: 4, direction: -1 },
+            { id: '2-r2', name: 'R2', resistance: 6, direction: 1 },
+          ],
+          voltageSources: [],
+        },
+      ],
+      three_mesh: [
+        {
+          id: 1,
+          name: 'Mesh 1',
+          resistors: [
+            { id: '1-r1', name: 'R1', resistance: 4, direction: 1 },
+            { id: '1-r2', name: 'R12', resistance: 2, direction: 1 },
+          ],
+          voltageSources: [
+            { id: '1-v1', name: 'V1', voltageRise: 12 },
+          ],
+        },
+        {
+          id: 2,
+          name: 'Mesh 2',
+          resistors: [
+            { id: '2-r1', name: 'R12', resistance: 2, direction: -1 },
+            { id: '2-r2', name: 'R2', resistance: 3, direction: 1 },
+            { id: '2-r3', name: 'R23', resistance: 1, direction: 1 },
+          ],
+          voltageSources: [],
+        },
+        {
+          id: 3,
+          name: 'Mesh 3',
+          resistors: [
+            { id: '3-r1', name: 'R23', resistance: 1, direction: -1 },
+            { id: '3-r2', name: 'R3', resistance: 5, direction: 1 },
+          ],
+          voltageSources: [
+            { id: '3-v1', name: 'V3', voltageRise: 6 },
+          ],
+        },
+      ],
+    };
+
+    const preset = examples[example];
+    if (!preset) return;
+
+    setMeshes(
+      preset.map((mesh) => ({
+        ...mesh,
+        resistors: mesh.resistors.map((resistor) => ({ ...resistor })),
+        voltageSources: mesh.voltageSources.map((source) => ({ ...source })),
+      }))
+    );
+    setResults(null);
+    setError('');
+    setSelectedExample(example);
+  };
 
   const clearResults = () => {
     setResults(null);
@@ -222,6 +311,7 @@ export default function MeshAnalysisPanel() {
 
   const resetCircuit = () => {
     setMeshes(createInitialMeshes());
+    setSelectedExample('two_mesh');
     setResults(null);
     setError('');
   };
@@ -258,6 +348,23 @@ export default function MeshAnalysisPanel() {
           Voltage rise: positive when the source raises voltage along
           the mesh traversal.
         </span>
+      </div>
+
+      <div className="mesh-example-selector">
+        <label className="circuit-field-label" htmlFor="mesh-example">
+          Load Example Circuit
+        </label>
+        <select
+          id="mesh-example"
+          className="circuit-number-input"
+          value={selectedExample}
+          onChange={(event) => loadExample(event.target.value)}
+        >
+          <option value="">Choose an example...</option>
+          <option value="single_mesh">Single Mesh — 2 Resistors</option>
+          <option value="two_mesh">Two Meshes — Shared Resistor</option>
+          <option value="three_mesh">Three Meshes — Two Shared Branches</option>
+        </select>
       </div>
 
       <div className="mesh-section-heading">

@@ -54,6 +54,50 @@ export default function NodalAnalysisPanel() {
 
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
+  const [selectedExample, setSelectedExample] = useState('');
+
+  const loadExample = (example) => {
+    const examples = {
+      single_node: {
+        resistors: [
+          { id: 1, name: 'R1', fromNode: 'N1', toNode: 'GND', resistance: 100 },
+          { id: 2, name: 'R2', fromNode: 'N1', toNode: 'GND', resistance: 200 },
+        ],
+        voltageSources: [
+          { id: 1, name: 'V1', positive: 'N1', negative: 'GND', voltage: 10 },
+        ],
+      },
+      two_node: {
+        resistors: [
+          { id: 1, name: 'R1', fromNode: 'N1', toNode: 'N2', resistance: 100 },
+          { id: 2, name: 'R2', fromNode: 'N2', toNode: 'GND', resistance: 200 },
+          { id: 3, name: 'R3', fromNode: 'N2', toNode: 'GND', resistance: 300 },
+        ],
+        voltageSources: [
+          { id: 1, name: 'V1', positive: 'N1', negative: 'GND', voltage: 12 },
+        ],
+      },
+      voltage_divider: {
+        resistors: [
+          { id: 1, name: 'R1', fromNode: 'N1', toNode: 'N2', resistance: 100 },
+          { id: 2, name: 'R2', fromNode: 'N2', toNode: 'GND', resistance: 200 },
+        ],
+        voltageSources: [
+          { id: 1, name: 'V1', positive: 'N1', negative: 'GND', voltage: 12 },
+        ],
+      },
+    };
+
+    const preset = examples[example];
+    if (!preset) return;
+
+    setGroundNode('GND');
+    setResistors(preset.resistors);
+    setVoltageSources(preset.voltageSources);
+    setResults(null);
+    setError('');
+    setSelectedExample(example);
+  };
 
   const updateResistor = (id, field, value) => {
     setResistors((current) =>
@@ -148,6 +192,21 @@ export default function NodalAnalysisPanel() {
       </div>
 
       <div className="nodal-ground-section">
+        <label className="circuit-field-label" htmlFor="nodal-example">
+          Load Example Circuit
+        </label>
+        <select
+          id="nodal-example"
+          className="circuit-number-input"
+          value={selectedExample}
+          onChange={(event) => loadExample(event.target.value)}
+        >
+          <option value="">Choose an example...</option>
+          <option value="single_node">Single-Node Circuit</option>
+          <option value="two_node">Two-Node Circuit</option>
+          <option value="voltage_divider">Voltage Divider</option>
+        </select>
+
         <label className="circuit-field-label" htmlFor="ground-node">
           Reference Ground Node
         </label>

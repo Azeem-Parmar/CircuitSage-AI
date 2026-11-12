@@ -12,58 +12,12 @@
  * - Voltage source: positive -> negative
  */
 
-function gaussianElimination(matrix, vector) {
-  const n = vector.length;
-
-  const A = matrix.map((row, i) => [...row, vector[i]]);
-
-  for (let col = 0; col < n; col++) {
-    // Find the row with the largest pivot.
-    let pivotRow = col;
-
-    for (let row = col + 1; row < n; row++) {
-      if (
-        Math.abs(A[row][col]) >
-        Math.abs(A[pivotRow][col])
-      ) {
-        pivotRow = row;
-      }
-    }
-
-    if (Math.abs(A[pivotRow][col]) < 1e-12) {
-      throw new Error(
-        'Circuit matrix is singular. Check circuit connectivity and voltage sources.'
-      );
-    }
-
-    [A[col], A[pivotRow]] = [A[pivotRow], A[col]];
-
-    // Normalize pivot row.
-    const pivot = A[col][col];
-
-    for (let j = col; j <= n; j++) {
-      A[col][j] /= pivot;
-    }
-
-    // Eliminate this column from other rows.
-    for (let row = 0; row < n; row++) {
-      if (row === col) continue;
-
-      const factor = A[row][col];
-
-      for (let j = col; j <= n; j++) {
-        A[row][j] -= factor * A[col][j];
-      }
-    }
-  }
-
-  return A.map(row => row[n]);
-}
+import { solveLinearSystem } from './linearSolver.js';
 
 function validateCircuit({
   resistors,
   voltageSources,
-  groundNode
+  groundNode,
 }) {
   if (!Array.isArray(resistors) || resistors.length === 0) {
     throw new Error('Add at least one resistor.');
@@ -83,6 +37,10 @@ function validateCircuit({
   const nodes = new Set([groundNode]);
 
   resistors.forEach((r, index) => {
+    if (!r || typeof r !== 'object') {
+      throw new Error(`Resistor ${index + 1} is invalid.`);
+    }
+
     if (
       typeof r.fromNode !== 'string' ||
       typeof r.toNode !== 'string' ||
@@ -109,6 +67,10 @@ function validateCircuit({
   });
 
   voltageSources.forEach((source, index) => {
+    if (!source || typeof source !== 'object') {
+      throw new Error(`Voltage source ${index + 1} is invalid.`);
+    }
+
     if (
       typeof source.positive !== 'string' ||
       typeof source.negative !== 'string' ||
@@ -139,18 +101,78 @@ function validateCircuit({
   return nodes;
 }
 
+function validateGroundConnectivity({
+  resistors,
+  voltageSources,
+  groundNode,
+  nodes,
+}) {
+  const graph = new Map(
+    [...nodes].map(node => [node, []])
+  );
+
+  // Resistors connect their two terminal nodes.
+  resistors.forEach(resistor => {
+    graph.get(resistor.fromNode).push(resistor.toNode);
+    graph.get(resistor.toNode).push(resistor.fromNode);
+  });
+
+  // Ideal voltage sources also connect their terminal nodes.
+  voltageSources.forEach(source => {
+    graph.get(source.positive).push(source.negative);
+    graph.get(source.negative).push(source.positive);
+  });
+
+  // Breadth-first search starting from ground.
+  const visited = new Set([groundNode]);
+  const queue = [groundNode];
+
+  for (let index = 0; index < queue.length; index++) {
+    const currentNode = queue[index];
+
+    for (const neighbor of graph.get(currentNode)) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  const disconnectedNodes = [...nodes].filter(
+    node => !visited.has(node)
+  );
+
+  if (disconnectedNodes.length > 0) {
+    throw new Error(
+      `Circuit contains nodes disconnected from ground: ${disconnectedNodes.join(', ')}.`
+    );
+  }
+}
+
+function ensureFiniteResults(values, description) {
+  if (!values.every(Number.isFinite)) {
+    throw new Error(`${description} contains non-finite values.`);
+  }
+}
+
 export function analyzeAdvancedCircuit({
   resistors,
   voltageSources = [],
-  groundNode = 'GND'
+  groundNode = 'GND',
 }) {
   const nodes = validateCircuit({
     resistors,
     voltageSources,
-    groundNode
+    groundNode,
   });
 
-  // All non-ground nodes are unknown node voltages.
+  validateGroundConnectivity({
+    resistors,
+    voltageSources,
+    groundNode,
+    nodes,
+  });
+
   const nodeList = [...nodes].filter(
     node => node !== groundNode
   );
@@ -174,28 +196,33 @@ export function analyzeAdvancedCircuit({
 
   const rhs = Array(dimension).fill(0);
 
-  // Stamp resistor conductances into the G matrix.
+  // Stamp resistor conductances.
   resistors.forEach(resistor => {
-    const g = 1 / resistor.resistance;
+    const conductance = 1 / resistor.resistance;
+
+    ensureFiniteResults(
+      [conductance],
+      'Resistor conductance'
+    );
 
     const from = nodeIndex.get(resistor.fromNode);
     const to = nodeIndex.get(resistor.toNode);
 
     if (from !== undefined) {
-      matrix[from][from] += g;
+      matrix[from][from] += conductance;
     }
 
     if (to !== undefined) {
-      matrix[to][to] += g;
+      matrix[to][to] += conductance;
     }
 
     if (from !== undefined && to !== undefined) {
-      matrix[from][to] -= g;
-      matrix[to][from] -= g;
+      matrix[from][to] -= conductance;
+      matrix[to][from] -= conductance;
     }
   });
 
-  // Stamp ideal voltage sources into the MNA matrix.
+  // Stamp ideal independent voltage sources.
   voltageSources.forEach((source, index) => {
     const sourceIndex = nodeCount + index;
 
@@ -215,11 +242,27 @@ export function analyzeAdvancedCircuit({
     rhs[sourceIndex] = source.voltage;
   });
 
-  // Solve the MNA system.
-  const solution = gaussianElimination(matrix, rhs);
+  // Solve using the shared numerical solver.
+  let solution;
 
+  try {
+    solution = solveLinearSystem(matrix, rhs);
+  } catch (error) {
+    if (
+      error.message.includes('singular') ||
+      error.message.includes('numerically unstable')
+    ) {
+      throw new Error('Circuit matrix is singular.', { cause: error });
+    }
+
+    throw error;
+  }
+
+  ensureFiniteResults(solution, 'Circuit solution');
+
+  // Calculate node voltages.
   const nodeVoltages = {
-    [groundNode]: 0
+    [groundNode]: 0,
   };
 
   nodeList.forEach((node, index) => {
@@ -235,6 +278,11 @@ export function analyzeAdvancedCircuit({
     const current = voltageDrop / resistor.resistance;
     const power = voltageDrop * current;
 
+    ensureFiniteResults(
+      [voltageDrop, current, power],
+      `Resistor ${index + 1} results`
+    );
+
     return {
       name: resistor.name || `R${index + 1}`,
       fromNode: resistor.fromNode,
@@ -242,7 +290,7 @@ export function analyzeAdvancedCircuit({
       resistance: resistor.resistance,
       voltageDrop,
       current,
-      power
+      power,
     };
   });
 
@@ -250,6 +298,12 @@ export function analyzeAdvancedCircuit({
   const voltageSourceResults = voltageSources.map(
     (source, index) => {
       const current = solution[nodeCount + index];
+      const power = source.voltage * current;
+
+      ensureFiniteResults(
+        [current, power],
+        `Voltage source ${index + 1} results`
+      );
 
       return {
         name: source.name || `V${index + 1}`,
@@ -257,12 +311,12 @@ export function analyzeAdvancedCircuit({
         negative: source.negative,
         voltage: source.voltage,
         current,
-        power: source.voltage * current
+        power,
       };
     }
   );
 
-  // Verify KCL: sum of currents leaving each node must be zero.
+  // Verify KCL at every node.
   const kclResiduals = {};
 
   for (const node of nodes) {
@@ -295,6 +349,19 @@ export function analyzeAdvancedCircuit({
     0
   );
 
+  const powerBalanceError =
+    totalResistorPower + totalSourcePower;
+
+  ensureFiniteResults(
+    [
+      maxKclResidual,
+      totalResistorPower,
+      totalSourcePower,
+      powerBalanceError,
+    ],
+    'Circuit verification'
+  );
+
   return {
     groundNode,
     nodeVoltages,
@@ -304,6 +371,6 @@ export function analyzeAdvancedCircuit({
     maxKclResidual,
     totalResistorPower,
     totalSourcePower,
-    powerBalanceError: totalResistorPower + totalSourcePower
+    powerBalanceError,
   };
 }

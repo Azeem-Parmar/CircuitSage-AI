@@ -102,7 +102,9 @@ expect(
         ],
         voltageSources: [],
       })
-    ).toThrow('Circuit matrix is singular.');
+    ).toThrow(
+      'Circuit contains nodes disconnected from ground: N1, N2.'
+    );
   });
 
   it('solves a circuit with two series voltage sources', () => {

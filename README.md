@@ -46,6 +46,7 @@ An interactive circuit analysis workspace offering three analysis modes.
 - Add and remove resistors dynamically.
 - Calculate equivalent resistance, total current, total power, individual resistor voltage drops, currents, and power.
 - Dynamic circuit schematic visualization.
+- Includes predefined series and parallel circuit examples.
 
 **Nodal Analysis**
 - Analyze DC circuits using Modified Nodal Analysis (MNA).
@@ -55,6 +56,8 @@ An interactive circuit analysis workspace offering three analysis modes.
 - Calculate voltage source currents and power.
 - Verify Kirchhoff's Current Law (KCL).
 - Check electrical power balance.
+- Includes single-node, two-node, and voltage-divider examples.
+- Detects circuit nodes disconnected from the reference ground.
 
 **Mesh Analysis**
 - Analyze planar DC circuits using Kirchhoff's Voltage Law (KVL).
@@ -63,16 +66,21 @@ An interactive circuit analysis workspace offering three analysis modes.
 - Calculate mesh currents and resistor branch currents.
 - Calculate voltage drops and resistor power.
 - Verify total resistor power against source power supplied.
+- Includes single-mesh, two-mesh, and three-mesh examples.
 
-**Electrical Verification**
+**Numerical Solver and Electrical Verification**
+- Shared linear-system solver using Gaussian elimination with scaled partial pivoting.
+- Matrix and input validation.
+- Detection of singular or numerically unstable systems.
+- Ground-connectivity validation in nodal analysis.
 - KCL residual verification in nodal analysis.
 - Power balance verification in nodal and mesh analysis.
-- Numerical Gaussian elimination with partial pivoting for solving linear systems.
 
 **Current Limitations**
 - The advanced analysis engines currently support DC resistive networks and ideal independent voltage sources.
-- Current sources, capacitors, inductors, and transient or AC analysis are not currently supported.
-- Mesh analysis requires the user to define the mesh branches and their directions explicitly.
+- Current sources, dependent sources, capacitors, inductors, and semiconductor device models are not currently supported by the advanced circuit analysis engines.
+- AC analysis and transient analysis are not currently supported.
+- Mesh analysis requires the user to define mesh branches and their directions explicitly.
 - Circuit Builder is not yet a general-purpose schematic-based circuit simulator.
 
 ## 🛠️ Technology Stack
@@ -95,6 +103,7 @@ An interactive circuit analysis workspace offering three analysis modes.
 
 ### Testing
 - Vitest
+- ESLint
 - Automated JavaScript unit tests
 
 ### Development Tools
@@ -128,7 +137,12 @@ CircuitSage-AI/
 │   │   ├── advanced-circuit/
 │   │   │   ├── advancedCircuitEngine.js
 │   │   │   ├── meshAnalysisEngine.js
+│   │   │   ├── linearSolver.js
 │   │   │   └── __tests__/
+│   │   │       ├── advancedCircuitEngine.test.js
+│   │   │       ├── circuitValidation.test.js
+│   │   │       ├── linearSolver.test.js
+│   │   │       └── meshAnalysisEngine.test.js
 │   │   │
 │   │   ├── data/
 │   │   │   └── components.js
@@ -230,7 +244,7 @@ The project currently implements calculations based on:
 - Kirchhoff's Voltage Law (KVL)
 - Modified Nodal Analysis
 - Mesh Current Analysis
-- Gaussian Elimination
+- Gaussian Elimination with Scaled Partial Pivoting
 - Basic Waveform Mathematics
 - Electrical Power Balance
 
@@ -239,10 +253,12 @@ The project currently implements calculations based on:
 The frontend has undergone automated and manual testing.
 
 **Automated testing**
-- 27 automated tests across 3 test files.
+- 41 automated tests across 5 test files.
 - Basic circuit engine tests.
 - Advanced circuit analysis engine tests.
 - Mesh analysis engine tests.
+- Shared numerical solver tests.
+- Circuit input and ground-connectivity validation tests.
 
 **Quality checks**
 - ESLint validation.
@@ -251,9 +267,12 @@ The frontend has undergone automated and manual testing.
 
 **Manual testing**
 - Basic series and parallel circuit calculations.
+- Predefined basic circuit examples.
 - Nodal analysis and node voltage verification.
 - Mesh current and shared resistor calculations.
+- Predefined single, two, and three-mesh examples.
 - KCL and electrical power balance checks.
+- Ground-connectivity validation.
 - Waveform generation and parameter testing.
 - Desktop and mobile responsive interface testing.
 
@@ -281,6 +300,8 @@ npm run build
 - [x] Mesh Current Analysis
 - [x] KCL and KVL-based circuit calculations
 - [x] Electrical power balance verification
+- [x] Shared numerical solver and circuit validation
+- [x] Predefined circuit examples
 - [ ] Advanced circuit simulation
 - [ ] AC circuit analysis
 - [ ] Transient analysis
