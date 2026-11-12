@@ -13,6 +13,7 @@ import {
 
 import { analyzeCircuit } from '../circuit/circuitEngine';
 import NodalAnalysisPanel from './NodalAnalysisPanel';
+import MeshAnalysisPanel from './MeshAnalysisPanel';
 
 function CircuitBuilder() {
   const [activeMode, setActiveMode] = useState('basic');
@@ -106,7 +107,6 @@ function CircuitBuilder() {
         </p>
       </div>
 
-      {/* Analysis Mode Selector */}
       <div className="circuit-mode-selector">
         <button
           className={activeMode === 'basic' ? 'active' : ''}
@@ -123,10 +123,20 @@ function CircuitBuilder() {
           <Activity size={17} />
           Nodal Analysis
         </button>
+
+        <button
+          className={activeMode === 'mesh' ? 'active' : ''}
+          onClick={() => setActiveMode('mesh')}
+        >
+          <Activity size={17} />
+          Mesh Analysis
+        </button>
       </div>
 
       {activeMode === 'nodal' ? (
         <NodalAnalysisPanel />
+      ) : activeMode === 'mesh' ? (
+        <MeshAnalysisPanel />
       ) : (
         <>
           <div className="circuit-builder-banner">

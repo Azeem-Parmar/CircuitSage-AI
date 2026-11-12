@@ -37,19 +37,43 @@ The project combines a React frontend with a Python FastAPI backend to provide p
 - Live waveform visualization using SVG.
 
 ### 4. Circuit Builder
+
+An interactive circuit analysis workspace offering three analysis modes.
+
+**Basic Analysis**
 - Create basic DC resistor networks.
 - Supports series and parallel connections.
 - Add and remove resistors dynamically.
-- Calculate:
-  - Equivalent resistance
-  - Total current
-  - Total power
-  - Individual resistor voltage drops
-  - Individual resistor currents
-  - Individual resistor power
+- Calculate equivalent resistance, total current, total power, individual resistor voltage drops, currents, and power.
 - Dynamic circuit schematic visualization.
 
-**Note:** The current Circuit Builder uses a JavaScript calculation engine for basic resistive networks. It is not yet a general-purpose circuit simulator.
+**Nodal Analysis**
+- Analyze DC circuits using Modified Nodal Analysis (MNA).
+- Supports resistors and ideal independent DC voltage sources.
+- Calculate node voltages.
+- Calculate resistor branch currents and power.
+- Calculate voltage source currents and power.
+- Verify Kirchhoff's Current Law (KCL).
+- Check electrical power balance.
+
+**Mesh Analysis**
+- Analyze planar DC circuits using Kirchhoff's Voltage Law (KVL).
+- Supports multiple meshes and shared resistor branches.
+- Supports ideal independent DC voltage sources.
+- Calculate mesh currents and resistor branch currents.
+- Calculate voltage drops and resistor power.
+- Verify total resistor power against source power supplied.
+
+**Electrical Verification**
+- KCL residual verification in nodal analysis.
+- Power balance verification in nodal and mesh analysis.
+- Numerical Gaussian elimination with partial pivoting for solving linear systems.
+
+**Current Limitations**
+- The advanced analysis engines currently support DC resistive networks and ideal independent voltage sources.
+- Current sources, capacitors, inductors, and transient or AC analysis are not currently supported.
+- Mesh analysis requires the user to define the mesh branches and their directions explicitly.
+- Circuit Builder is not yet a general-purpose schematic-based circuit simulator.
 
 ## 🛠️ Technology Stack
 
@@ -69,6 +93,10 @@ The project combines a React frontend with a Python FastAPI backend to provide p
 - Uvicorn
 - Pydantic
 
+### Testing
+- Vitest
+- Automated JavaScript unit tests
+
 ### Development Tools
 - Visual Studio Code
 - Git
@@ -82,24 +110,31 @@ CircuitSage-AI/
 │
 ├── backend/
 │   ├── main.py
-│   ├── requirements.txt
-│   └── venv/
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── CircuitBuilder.jsx
+│   │   │   ├── NodalAnalysisPanel.jsx
+│   │   │   ├── MeshAnalysisPanel.jsx
 │   │   │   ├── ComponentLibrary.jsx
-│   │   │   ├── WaveformStudio.jsx
-│   │   │   └── CircuitBuilder.jsx
+│   │   │   └── WaveformStudio.jsx
+│   │   │
+│   │   ├── circuit/
+│   │   │   ├── circuitEngine.js
+│   │   │   └── __tests__/
+│   │   │
+│   │   ├── advanced-circuit/
+│   │   │   ├── advancedCircuitEngine.js
+│   │   │   ├── meshAnalysisEngine.js
+│   │   │   └── __tests__/
 │   │   │
 │   │   ├── data/
 │   │   │   └── components.js
 │   │   │
 │   │   ├── waveform/
 │   │   │   └── waveformEngine.js
-│   │   │
-│   │   ├── circuit/
-│   │   │   └── circuitEngine.js
 │   │   │
 │   │   ├── App.jsx
 │   │   ├── App.css
@@ -188,22 +223,51 @@ The project currently implements calculations based on:
 
 - Ohm's Law
 - Electrical Power
-- Series Resistance
-- Parallel Resistance
-- Voltage Division in Series Networks
-- Current Distribution in Parallel Networks
+- Series and Parallel Resistance
+- Voltage Division
+- Current Distribution
+- Kirchhoff's Current Law (KCL)
+- Kirchhoff's Voltage Law (KVL)
+- Modified Nodal Analysis
+- Mesh Current Analysis
+- Gaussian Elimination
 - Basic Waveform Mathematics
+- Electrical Power Balance
 
 ## 🧪 Testing and Validation
 
-The project has undergone:
-- Frontend production build verification.
-- Manual testing of circuit calculations.
-- Series and parallel resistor network checks.
-- Waveform generation and parameter testing.
-- Frontend and backend integration checks.
+The frontend has undergone automated and manual testing.
 
-Automated unit testing and broader quality checks are planned as part of future development.
+**Automated testing**
+- 27 automated tests across 3 test files.
+- Basic circuit engine tests.
+- Advanced circuit analysis engine tests.
+- Mesh analysis engine tests.
+
+**Quality checks**
+- ESLint validation.
+- Vitest test execution.
+- Vite production build verification.
+
+**Manual testing**
+- Basic series and parallel circuit calculations.
+- Nodal analysis and node voltage verification.
+- Mesh current and shared resistor calculations.
+- KCL and electrical power balance checks.
+- Waveform generation and parameter testing.
+- Desktop and mobile responsive interface testing.
+
+Run the frontend checks:
+
+```bash
+cd frontend
+
+npm run lint
+
+npm run test:run
+
+npm run build
+```
 
 ## 🗺️ Development Roadmap
 
@@ -211,10 +275,15 @@ Automated unit testing and broader quality checks are planned as part of future 
 - [x] Ohm's Law Circuit Analyzer
 - [x] Electronic Component Library
 - [x] Interactive Waveform Studio
-- [x] Series and Parallel Circuit Builder
-- [ ] Automated unit testing
-- [ ] Kirchhoff's Current and Voltage Laws
+- [x] Basic Series and Parallel Circuit Builder
+- [x] Automated unit testing
+- [x] Modified Nodal Analysis
+- [x] Mesh Current Analysis
+- [x] KCL and KVL-based circuit calculations
+- [x] Electrical power balance verification
 - [ ] Advanced circuit simulation
+- [ ] AC circuit analysis
+- [ ] Transient analysis
 - [ ] Online deployment
 
 ## 👨‍💻 Author

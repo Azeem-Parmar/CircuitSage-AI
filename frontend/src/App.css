@@ -1509,3 +1509,234 @@ h1 span { color: #70b5ff; }
     font-size: 12px;
   }
 }
+
+/* =================================
+   DAY 6 - MESH ANALYSIS WORKSPACE
+================================= */
+
+.mesh-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.mesh-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(96, 173, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(96, 173, 255, 0.07);
+  color: #b9d9ff;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.mesh-info svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #60adff;
+}
+
+.mesh-direction-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 15px 17px;
+  border: 1px solid #26354d;
+  border-radius: 10px;
+  background: #111c30;
+  color: #9aacc2;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.mesh-direction-guide strong {
+  color: #82c2ff;
+  font-size: 13px;
+}
+
+.mesh-section-heading,
+.mesh-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mesh-section-heading h3 {
+  margin: 0;
+  color: #e8edf8;
+  font-size: 16px;
+}
+
+.mesh-section-heading p {
+  margin: 5px 0 0;
+  color: #8190a8;
+  font-size: 12px;
+}
+
+.mesh-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #26354d;
+  border-radius: 13px;
+  background: #111c30;
+}
+
+.mesh-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #26354d;
+}
+
+.mesh-number {
+  color: #60adff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.mesh-card-heading h3 {
+  margin: 5px 0 0;
+  color: #e8edf8;
+  font-size: 16px;
+}
+
+.mesh-subheading {
+  margin-top: 3px;
+}
+
+.mesh-subheading h4 {
+  margin: 0;
+  color: #dce7f7;
+  font-size: 13px;
+}
+
+.mesh-component-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) minmax(150px, 1fr) 36px;
+  align-items: end;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid #26354d;
+  border-radius: 9px;
+  background: #152238;
+}
+
+.mesh-component-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  color: #aab8cc;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.mesh-component-row input,
+.mesh-component-row select {
+  width: 100%;
+  min-width: 0;
+  height: 39px;
+  padding: 9px 10px;
+  border: 1px solid #34445e;
+  border-radius: 8px;
+  outline: none;
+  background: #0b1425;
+  color: #e8edf8;
+  font-size: 12px;
+}
+
+.mesh-component-row input:focus,
+.mesh-component-row select:focus {
+  border-color: #60adff;
+}
+
+.mesh-component-row .circuit-remove-button {
+  width: 36px;
+  height: 39px;
+}
+
+.mesh-source-heading {
+  padding-top: 13px;
+  border-top: 1px solid #26354d;
+}
+
+.mesh-empty-note {
+  margin: 0;
+  color: #8190a8;
+  font-size: 12px;
+}
+
+.mesh-source-convention {
+  align-self: center;
+  color: #9aacc2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.mesh-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #26354d;
+  border-radius: 14px;
+  background: #111c30;
+}
+
+.mesh-results-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #55d9a5;
+}
+
+.mesh-results-heading h3 {
+  margin: 0;
+  color: #e8edf8;
+  font-size: 17px;
+}
+
+.mesh-results h4 {
+  margin: 8px 0 0;
+  color: #e8edf8;
+  font-size: 14px;
+}
+
+@media (max-width: 850px) {
+  .mesh-component-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mesh-source-convention {
+    align-self: end;
+  }
+}
+
+@media (max-width: 500px) {
+  .mesh-card {
+    padding: 13px;
+  }
+
+  .mesh-component-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mesh-source-convention {
+    align-self: start;
+  }
+
+  .mesh-results {
+    padding: 14px;
+  }
+}
+
