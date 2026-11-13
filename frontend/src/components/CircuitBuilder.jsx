@@ -409,7 +409,9 @@ function CircuitBuilder() {
                   voltage={voltage}
                   connection={connection}
                   resistors={resistors}
+                  results={results}
                 />
+
 
                 <p className="circuit-schematic-caption">
                   Schematic preview of the selected resistor configuration.

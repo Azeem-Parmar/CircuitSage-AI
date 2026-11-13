@@ -45,7 +45,11 @@ An interactive circuit analysis workspace offering four analysis modes.
 - Supports series and parallel connections.
 - Add and remove resistors dynamically.
 - Calculate equivalent resistance, total current, total power, individual resistor voltage drops, currents, and power.
-- Live circuit schematic visualization that updates with voltage, connection type, and resistor changes.
+- Live series and parallel circuit schematic visualization.
+- Display calculated total current and individual resistor current.
+- Display individual resistor voltage drops and resistance values.
+- Visual branch-current direction indicators.
+- Automatically clear stale electrical values when circuit inputs change.
 - Includes predefined series and parallel circuit examples.
 
 **Nodal Analysis**
