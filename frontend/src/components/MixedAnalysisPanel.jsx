@@ -12,6 +12,8 @@ import {
   Layers,
 } from 'lucide-react';
 
+import MixedCircuitSchematic from './MixedCircuitSchematic';
+
 import { analyzeMixedCircuit } from '../circuit/mixedCircuitEngine';
 
 let nextNodeId = 10;
@@ -329,18 +331,6 @@ function NetworkNodeEditor({
   );
 }
 
-function createNetworkSummary(node) {
-  if (node.type === 'resistor') {
-    return `${node.name} (${node.resistance || 0} Ω)`;
-  }
-
-  const children = node.children.map(createNetworkSummary).join(
-    node.type === 'series' ? ' + ' : ' ∥ '
-  );
-
-  return `(${children})`;
-}
-
 function prepareNetwork(node, sourceNetwork) {
   if (node.type === 'resistor') {
     return {
@@ -542,14 +532,11 @@ function MixedAnalysisPanel() {
               </div>
             </div>
 
-            <div className="mixed-topology-summary">
-              <span className="mixed-topology-label">Network expression</span>
-              <code>{createNetworkSummary(network)}</code>
-              <p>
-                This is a live topology summary of your configured network,
-                not a physical circuit schematic.
-              </p>
-            </div>
+            <MixedCircuitSchematic
+              network={network}
+              voltage={Number(voltage)}
+              results={results}
+            />
           </section>
 
           <section className="panel circuit-results-panel">

@@ -1741,9 +1741,7 @@ h1 span { color: #70b5ff; }
 }
 
 
-/* =========================================
-   DAY 9: DYNAMIC MIXED CIRCUIT EDITOR
-========================================= */
+/* DAY 9: DYNAMIC MIXED CIRCUIT EDITOR */
 
 .mixed-network-editor {
   width: 100%;
@@ -1751,14 +1749,36 @@ h1 span { color: #70b5ff; }
   margin-top: 12px;
 }
 
+.mixed-child-count {
+  margin-left: auto;
+  color: #91a4bd;
+  font-size: 11px;
+}
+
+.mixed-network-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.mixed-network-stats span {
+  padding: 7px 12px;
+  border: 1px solid rgba(96, 173, 255, 0.25);
+  border-radius: 8px;
+  color: #9fcaff;
+  background: rgba(96, 173, 255, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .mixed-group-node {
-  width: 100%;
   min-width: 0;
+  margin: 12px 0;
   padding: 13px;
-  margin: 10px 0;
-  border: 1px solid #354963;
-  border-radius: 9px;
-  background: #101d30;
+  border: 1px solid rgba(96, 173, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(96, 173, 255, 0.045);
 }
 
 .mixed-group-series {
@@ -1766,7 +1786,8 @@ h1 span { color: #70b5ff; }
 }
 
 .mixed-group-parallel {
-  border-left: 3px solid #55d9a5;
+  border-left: 3px solid #d6a66a;
+  background: rgba(214, 166, 106, 0.045);
 }
 
 .mixed-group-heading,
@@ -1774,9 +1795,8 @@ h1 span { color: #70b5ff; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 9px;
-  min-width: 0;
 }
 
 .mixed-node-title {
@@ -1784,120 +1804,157 @@ h1 span { color: #70b5ff; }
   align-items: center;
   gap: 8px;
   min-width: 0;
-  color: #82c2ff;
-  font-size: 12px;
+  color: #b8d8fa;
 }
 
 .mixed-node-title strong {
-  color: #dce8f8;
+  font-size: 13px;
+}
+
+.mixed-node-title span {
+  color: #91a4bd;
+  font-size: 11px;
+}
+
+.mixed-group-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .mixed-group-select {
-  max-width: 125px;
+  max-width: 115px;
   padding: 7px 9px;
-  border: 1px solid #354963;
-  border-radius: 6px;
-  background: #0e192b;
-  color: #dce8f8;
-  font-size: 10px;
-  outline: none;
+  border: 1px solid rgba(96, 173, 255, 0.3);
+  border-radius: 7px;
+  color: #d8e8fa;
+  background: #172438;
+  font-size: 12px;
 }
 
-.mixed-group-select:focus {
-  border-color: #60adff;
+.mixed-group-select option {
+  color: #ffffff;
+  background: #172438;
 }
 
 .mixed-group-children {
   display: grid;
   gap: 9px;
-  min-width: 0;
-  margin: 13px 0;
+  margin: 12px 0;
+  padding-left: 12px;
+  border-left: 1px dashed rgba(145, 164, 189, 0.35);
 }
 
 .mixed-resistor-node {
-  width: 100%;
   min-width: 0;
   padding: 12px;
-  border: 1px solid #354963;
-  border-radius: 8px;
-  background: #17253a;
+  border: 1px solid rgba(145, 164, 189, 0.2);
+  border-radius: 9px;
+  background: rgba(12, 25, 42, 0.55);
 }
 
 .mixed-resistance-field {
   display: grid;
   gap: 7px;
   margin-top: 12px;
-  color: #a9b9ce;
-  font-size: 10px;
+  color: #91a4bd;
+  font-size: 12px;
 }
 
 .mixed-resistance-field input {
-  display: block;
   width: 100%;
   min-width: 0;
-  box-sizing: border-box;
-  padding: 9px;
-  border: 1px solid #354963;
+  padding: 9px 11px;
+  border: 1px solid rgba(96, 173, 255, 0.25);
   border-radius: 7px;
-  background: #0e192b;
-  color: #e8f2ff;
   outline: none;
+  color: #e7f2ff;
+  background: rgba(96, 173, 255, 0.06);
 }
 
-.mixed-resistance-field input:focus {
+.mixed-resistance-field input:focus,
+.mixed-group-select:focus {
   border-color: #60adff;
 }
 
 .mixed-group-actions {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 7px;
-  padding-top: 10px;
-  border-top: 1px solid #293a52;
+  margin-top: 12px;
 }
 
-.mixed-small-action {
+.mixed-small-action,
+.mixed-icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 7px 9px;
-  border: 1px solid #354963;
-  border-radius: 6px;
-  background: #19283d;
-  color: #a9c9ec;
+  border: 1px solid rgba(96, 173, 255, 0.25);
+  border-radius: 7px;
+  color: #a9d1ff;
+  background: rgba(96, 173, 255, 0.08);
   cursor: pointer;
-  font-size: 9px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.mixed-small-action:hover {
-  border-color: #3985d3;
-  background: #18365a;
+.mixed-small-action {
+  padding: 7px 9px;
+  font-size: 11px;
 }
 
-.mixed-small-action:focus-visible {
-  outline: 2px solid #60adff;
-  outline-offset: 2px;
+.mixed-icon-button {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
 }
 
-.mixed-child-count {
-  margin-left: auto;
-  color: #8797af;
-  font-size: 9px;
+.mixed-small-action:hover,
+.mixed-icon-button:hover {
+  border-color: #60adff;
+  background: rgba(96, 173, 255, 0.16);
+}
+
+.mixed-delete-button {
+  color: #f19a9a;
+  border-color: rgba(241, 110, 110, 0.25);
+  background: rgba(241, 110, 110, 0.07);
+}
+
+.mixed-delete-button:hover {
+  border-color: #f19a9a;
+  background: rgba(241, 110, 110, 0.15);
+}
+
+.mixed-editor-hint {
+  margin: 10px 0 0;
+  color: #91a4bd;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .mixed-topology-summary {
   display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 10px;
-  min-width: 0;
-  min-height: 190px;
-  padding: 24px;
-  text-align: center;
-  color: #82c2ff;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(96, 173, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(96, 173, 255, 0.05);
+}
+
+.mixed-topology-label {
+  color: #91a4bd;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mixed-topology-summary code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #b8d8fa;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: normal;
 }
 
 .mixed-topology-summary h4 {
@@ -1907,52 +1964,112 @@ h1 span { color: #70b5ff; }
 }
 
 .mixed-topology-summary p {
-  max-width: 300px;
   margin: 0;
-  color: #8797af;
+  color: #91a4bd;
   font-size: 11px;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 .mixed-breakdown-header {
   display: grid;
-  grid-template-columns: 0.7fr 1fr 1fr 1fr;
-  gap: 5px;
-  padding: 8px 4px;
-  color: #8797af;
-  font-size: 9px;
-  text-align: right;
+  grid-template-columns: 0.8fr 1fr 1fr 1fr;
+  gap: 7px;
+  margin: 12px 0 6px;
+  color: #91a4bd;
+  font-size: 10px;
+  font-weight: 600;
 }
 
-.mixed-breakdown-header span:first-child {
-  text-align: left;
+.circuit-breakdown-row {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr 1fr;
+  gap: 7px;
+  align-items: center;
 }
 
-@media (max-width: 500px) {
-  .mixed-group-node {
-    padding: 9px;
-  }
+.circuit-breakdown-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 
-  .mixed-group-actions {
-    gap: 6px;
-  }
-
-  .mixed-small-action {
-    padding: 7px;
-    font-size: 8px;
-  }
-
+@media (max-width: 600px) {
   .mixed-child-count {
     width: 100%;
     margin-left: 0;
   }
 
-  .mixed-breakdown-header,
-  .circuit-breakdown-row {
-    font-size: 8px;
+  .mixed-group-node {
+    padding: 10px;
   }
 
-  .mixed-topology-summary {
-    padding: 18px;
+  .mixed-group-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .mixed-small-action {
+    justify-content: flex-start;
+  }
+
+  .mixed-breakdown-header,
+  .circuit-breakdown-row {
+    grid-template-columns: 0.7fr 1fr 1fr 1fr;
+    gap: 4px;
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================
+   DAY 11: MIXED CIRCUIT SCHEMATIC
+========================================= */
+
+.mixed-schematic-wrapper {
+  width: 100%;
+  min-width: 0;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(96, 173, 255, 0.22);
+  border-radius: 12px;
+  background: #0b1425;
+}
+
+.mixed-circuit-schematic {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 240px;
+  overflow: visible;
+}
+
+.mixed-schematic-caption {
+  margin: 0;
+  padding: 12px 15px;
+  border-top: 1px solid rgba(96, 173, 255, 0.15);
+  color: #91a4bd;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.mixed-circuit-schematic text {
+  font-family: inherit;
+}
+
+.mixed-circuit-schematic path {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 600px) {
+  .mixed-schematic-wrapper {
+    border-radius: 8px;
+  }
+
+  .mixed-circuit-schematic {
+    min-height: 180px;
+  }
+
+  .mixed-schematic-caption {
+    padding: 10px;
+    font-size: 10px;
   }
 }

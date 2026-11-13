@@ -77,7 +77,11 @@ An interactive circuit analysis workspace offering four analysis modes.
 - Dynamically create nested series and parallel groups.
 - Add and remove resistors and nested groups through the topology editor.
 - Change group connection types between series and parallel.
-- Display a live topology summary and resistor/group counts.
+- Display a recursive mixed series-parallel circuit schematic.
+- Visualize nested series and parallel branches with connecting wires.
+- Display resistor resistance, calculated current, voltage drop, and power.
+- Show conventional current direction using visual arrows.
+- Display total network current and clear calculated values when inputs change.
 - Calculate equivalent resistance, total current, and total power.
 - Calculate individual resistor voltage drops, currents, and power.
 - Validate resistor values, supply voltage, network structure, and duplicate resistor names.
@@ -145,6 +149,7 @@ CircuitSage-AI/
 │   │   │   ├── NodalAnalysisPanel.jsx
 │   │   │   ├── MeshAnalysisPanel.jsx
 │   │   │   ├── MixedAnalysisPanel.jsx
+│   │   │   ├── MixedCircuitSchematic.jsx
 │   │   │   ├── ComponentLibrary.jsx
 │   │   │   └── WaveformStudio.jsx
 │   │   │
