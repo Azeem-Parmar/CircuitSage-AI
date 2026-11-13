@@ -15,6 +15,7 @@ import { analyzeCircuit } from '../circuit/circuitEngine';
 import NodalAnalysisPanel from './NodalAnalysisPanel';
 import MeshAnalysisPanel from './MeshAnalysisPanel';
 import MixedAnalysisPanel from './MixedAnalysisPanel';
+import CircuitSchematic from './CircuitSchematic';
 
 function CircuitBuilder() {
   const [activeMode, setActiveMode] = useState('basic');
@@ -404,107 +405,11 @@ function CircuitBuilder() {
                   </div>
                 </div>
 
-                <svg
-                  viewBox="0 0 520 250"
-                  className="circuit-schematic"
-                  role="img"
-                  aria-label={`${connection} resistor circuit schematic`}
-                >
-                  <g
-                    fill="none"
-                    stroke="#60adff"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    {connection === 'series' ? (
-                      <>
-                        <path d="M45 105 H95 M475 105 V190 H45 V105" />
-
-                        {resistors.map((r, i) => {
-                          const gap = 330 / resistors.length;
-                          const x = 95 + i * gap;
-                          const endX = x + 50;
-
-                          const nextX =
-                            i === resistors.length - 1
-                              ? 475
-                              : 95 + (i + 1) * gap;
-
-                          return (
-                            <g key={r.id}>
-                              <path
-                                d={`M${x} 105 l8 -12 l12 24 l12 -24 l12 24 l6 -12`}
-                              />
-
-                              <path d={`M${endX} 105 H${nextX}`} />
-
-                              <text
-                                x={x + 25}
-                                y="78"
-                                textAnchor="middle"
-                                fill="#b8d8fa"
-                                stroke="none"
-                                fontSize="12"
-                              >
-                                {r.name}
-                              </text>
-                            </g>
-                          );
-                        })}
-                      </>
-                    ) : (
-                      <>
-                        <path d="M45 55 V195 M475 55 V195" />
-
-                        {resistors.map((r, i) => {
-                          const y =
-                            resistors.length === 1
-                              ? 125
-                              : 65 + i * (120 / (resistors.length - 1));
-
-                          return (
-                            <g key={r.id}>
-                              <path
-                                d={`M45 ${y} H90 l8 -12 l12 24 l12 -24 l12 24 l6 -12 H475`}
-                              />
-
-                              <text
-                                x="260"
-                                y={y - 15}
-                                textAnchor="middle"
-                                fill="#b8d8fa"
-                                stroke="none"
-                                fontSize="12"
-                              >
-                                {r.name}
-                              </text>
-                            </g>
-                          );
-                        })}
-                      </>
-                    )}
-                  </g>
-
-                  <g fill="#e9b96d" stroke="none">
-                    <circle cx="45" cy="105" r="5" />
-                    <circle cx="475" cy="105" r="5" />
-                  </g>
-
-                  <text x="45" y="35" fill="#91a4bd" fontSize="12">
-                    DC Source: {voltage || 0} V
-                  </text>
-
-                  <text
-                    x="260"
-                    y="225"
-                    textAnchor="middle"
-                    fill="#91a4bd"
-                    fontSize="12"
-                  >
-                    {connection.toUpperCase()} NETWORK
-                  </text>
-                </svg>
+                <CircuitSchematic
+                  voltage={voltage}
+                  connection={connection}
+                  resistors={resistors}
+                />
 
                 <p className="circuit-schematic-caption">
                   Schematic preview of the selected resistor configuration.

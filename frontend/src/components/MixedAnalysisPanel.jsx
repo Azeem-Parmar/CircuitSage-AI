@@ -6,63 +6,419 @@ import {
   Play,
   RotateCcw,
   Zap,
+  Plus,
+  Trash2,
+  GitBranch,
+  Layers,
 } from 'lucide-react';
 
 import { analyzeMixedCircuit } from '../circuit/mixedCircuitEngine';
 
-const initialValues = {
-  voltage: 12,
-  r1: 100,
-  r2: 200,
-  r3: 300,
+let nextNodeId = 10;
+
+const initialNetwork = {
+  id: 'root',
+  type: 'series',
+  children: [
+    {
+      id: 'r1',
+      type: 'resistor',
+      name: 'R1',
+      resistance: 100,
+    },
+    {
+      id: 'parallel-1',
+      type: 'parallel',
+      children: [
+        {
+          id: 'r2',
+          type: 'resistor',
+          name: 'R2',
+          resistance: 200,
+        },
+        {
+          id: 'r3',
+          type: 'resistor',
+          name: 'R3',
+          resistance: 300,
+        },
+      ],
+    },
+  ],
 };
 
+function collectResistorNames(node, names = []) {
+  if (node.type === 'resistor') {
+    names.push(node.name);
+    return names;
+  }
+
+  node.children.forEach((child) => collectResistorNames(child, names));
+  return names;
+}
+
+function getNextResistorName(network) {
+  const names = new Set(collectResistorNames(network));
+  let number = 1;
+
+  while (names.has(`R${number}`)) {
+    number += 1;
+  }
+
+  return `R${number}`;
+}
+
+function createResistor(name) {
+  return {
+    id: `node-${nextNodeId++}`,
+    type: 'resistor',
+    name,
+    resistance: 100,
+  };
+}
+
+function createGroup(type) {
+  const firstId = nextNodeId++;
+  const secondId = nextNodeId++;
+
+  return {
+    id: `group-${nextNodeId++}`,
+    type,
+    children: [
+      {
+        id: `node-${firstId}`,
+        type: 'resistor',
+        name: '',
+        resistance: 100,
+      },
+      {
+        id: `node-${secondId}`,
+        type: 'resistor',
+        name: '',
+        resistance: 100,
+      },
+    ],
+  };
+}
+
+function assignMissingNames(node, network) {
+  const usedNames = new Set(collectResistorNames(network));
+
+  function walk(current) {
+    if (current.type === 'resistor') {
+      if (!current.name) {
+        let number = 1;
+
+        while (usedNames.has(`R${number}`)) {
+          number += 1;
+        }
+
+        current.name = `R${number}`;
+        usedNames.add(current.name);
+      }
+
+      return;
+    }
+
+    current.children.forEach(walk);
+  }
+
+  walk(node);
+  return node;
+}
+
+function updateNode(node, targetId, updater) {
+  if (node.id === targetId) {
+    return updater(node);
+  }
+
+  if (node.type === 'resistor') {
+    return node;
+  }
+
+  return {
+    ...node,
+    children: node.children.map((child) =>
+      updateNode(child, targetId, updater)
+    ),
+  };
+}
+
+function removeNode(node, targetId) {
+  if (node.type === 'resistor') {
+    return node;
+  }
+
+  return {
+    ...node,
+    children: node.children
+      .filter((child) => child.id !== targetId)
+      .map((child) => removeNode(child, targetId)),
+  };
+}
+
+function countResistors(node) {
+  if (node.type === 'resistor') {
+    return 1;
+  }
+
+  return node.children.reduce(
+    (total, child) => total + countResistors(child),
+    0
+  );
+}
+
+function countGroups(node) {
+  if (node.type === 'resistor') {
+    return 0;
+  }
+
+  return 1 + node.children.reduce(
+    (total, child) => total + countGroups(child),
+    0
+  );
+}
+
+function NetworkNodeEditor({
+  node,
+  network,
+  onUpdate,
+  onRemove,
+  canRemove,
+  isRoot = false,
+}) {
+  if (node.type === 'resistor') {
+    return (
+      <div className="mixed-resistor-node">
+        <div className="mixed-node-heading">
+          <div className="mixed-node-title">
+            <Zap size={16} />
+            <strong>{node.name}</strong>
+            <span>Resistor</span>
+          </div>
+
+          {canRemove && (
+            <button
+              type="button"
+              className="mixed-icon-button mixed-delete-button"
+              onClick={() => onRemove(node.id)}
+              aria-label={`Remove ${node.name}`}
+              title={`Remove ${node.name}`}
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
+        </div>
+
+        <label className="mixed-resistance-field">
+          Resistance (Ω)
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={node.resistance}
+            onChange={(event) =>
+              onUpdate(node.id, {
+                resistance:
+                  event.target.value === ''
+                    ? ''
+                    : Number(event.target.value),
+              })
+            }
+            placeholder="Enter resistance"
+          />
+        </label>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`mixed-group-node mixed-group-${node.type}`}
+      data-group-id={node.id}
+    >
+      <div className="mixed-group-heading">
+        <div className="mixed-node-title">
+          {node.type === 'series' ? (
+            <GitBranch size={17} />
+          ) : (
+            <Layers size={17} />
+          )}
+          <strong>{isRoot ? 'Main Network' : `${node.type} Group`}</strong>
+          <span>{node.children.length} elements</span>
+        </div>
+
+        <div className="mixed-group-controls">
+          <select
+            className="mixed-group-select"
+            value={node.type}
+            onChange={(event) =>
+              onUpdate(node.id, { type: event.target.value })
+            }
+            aria-label="Group connection type"
+          >
+            <option value="series">Series</option>
+            <option value="parallel">Parallel</option>
+          </select>
+
+          {canRemove && (
+            <button
+              type="button"
+              className="mixed-icon-button mixed-delete-button"
+              onClick={() => onRemove(node.id)}
+              aria-label="Remove group"
+              title="Remove group"
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mixed-group-children">
+        {node.children.map((child) => (
+          <NetworkNodeEditor
+            key={child.id}
+            node={child}
+            network={network}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+            canRemove={node.children.length > 2}
+          />
+        ))}
+      </div>
+
+      <div className="mixed-group-actions">
+        <button
+          type="button"
+          className="mixed-small-action"
+          onClick={() => onUpdate(node.id, {
+            addChild: 'resistor',
+          })}
+        >
+          <Plus size={14} /> Add resistor
+        </button>
+
+        <button
+          type="button"
+          className="mixed-small-action"
+          onClick={() => onUpdate(node.id, {
+            addChild: 'series',
+          })}
+        >
+          <Plus size={14} /> Add series group
+        </button>
+
+        <button
+          type="button"
+          className="mixed-small-action"
+          onClick={() => onUpdate(node.id, {
+            addChild: 'parallel',
+          })}
+        >
+          <Plus size={14} /> Add parallel group
+        </button>
+      </div>
+
+      {isRoot && (
+        <p className="mixed-editor-hint">
+          Each series or parallel group must contain at least two elements.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function createNetworkSummary(node) {
+  if (node.type === 'resistor') {
+    return `${node.name} (${node.resistance || 0} Ω)`;
+  }
+
+  const children = node.children.map(createNetworkSummary).join(
+    node.type === 'series' ? ' + ' : ' ∥ '
+  );
+
+  return `(${children})`;
+}
+
+function prepareNetwork(node, sourceNetwork) {
+  if (node.type === 'resistor') {
+    return {
+      type: 'resistor',
+      name: node.name,
+      resistance: Number(node.resistance),
+    };
+  }
+
+  const prepared = {
+    type: node.type,
+    children: node.children.map((child) =>
+      prepareNetwork(child, sourceNetwork)
+    ),
+  };
+
+  return assignMissingNames(prepared, sourceNetwork);
+}
+
 function MixedAnalysisPanel() {
-  const [values, setValues] = useState(initialValues);
+  const [voltage, setVoltage] = useState(12);
+  const [network, setNetwork] = useState(initialNetwork);
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
 
-  const updateValue = (field, value) => {
-    setValues((previous) => ({
-      ...previous,
-      [field]: value === '' ? '' : Number(value),
-    }));
+  const updateVoltage = (value) => {
+    setVoltage(value === '' ? '' : Number(value));
+    setResults(null);
+    setError('');
+  };
 
+  const updateNodeData = (targetId, changes) => {
+    setNetwork((previous) => {
+      if (changes.addChild) {
+        const childType = changes.addChild;
+
+        if (childType === 'resistor') {
+          const name = getNextResistorName(previous);
+          const child = createResistor(name);
+
+          return updateNode(previous, targetId, (node) => ({
+            ...node,
+            children: [...node.children, child],
+          }));
+        }
+
+        const group = createGroup(childType);
+        const namedGroup = assignMissingNames(group, previous);
+
+        return updateNode(previous, targetId, (node) => ({
+          ...node,
+          children: [...node.children, namedGroup],
+        }));
+      }
+
+      return updateNode(previous, targetId, (node) => ({
+        ...node,
+        ...changes,
+      }));
+    });
+
+    setResults(null);
+    setError('');
+  };
+
+  const handleRemove = (targetId) => {
+    setNetwork((previous) => removeNode(previous, targetId));
     setResults(null);
     setError('');
   };
 
   const handleAnalyze = () => {
     try {
-      const network = {
-        type: 'series',
-        children: [
-          {
-            type: 'resistor',
-            name: 'R1',
-            resistance: Number(values.r1),
-          },
-          {
-            type: 'parallel',
-            children: [
-              {
-                type: 'resistor',
-                name: 'R2',
-                resistance: Number(values.r2),
-              },
-              {
-                type: 'resistor',
-                name: 'R3',
-                resistance: Number(values.r3),
-              },
-            ],
-          },
-        ],
-      };
+      const preparedNetwork = prepareNetwork(network, network);
 
       const analysis = analyzeMixedCircuit({
-        voltage: Number(values.voltage),
-        network,
+        voltage: Number(voltage),
+        network: preparedNetwork,
       });
 
       setResults(analysis);
@@ -78,16 +434,15 @@ function MixedAnalysisPanel() {
   };
 
   const resetCircuit = () => {
-    setValues(initialValues);
+    nextNodeId = 10;
+    setVoltage(12);
+    setNetwork(initialNetwork);
     setResults(null);
     setError('');
   };
 
-  const fields = [
-    { key: 'r1', label: 'R1 – Series resistor' },
-    { key: 'r2', label: 'R2 – Parallel branch 1' },
-    { key: 'r3', label: 'R3 – Parallel branch 2' },
-  ];
+  const resistorCount = countResistors(network);
+  const groupCount = countGroups(network);
 
   return (
     <>
@@ -98,7 +453,7 @@ function MixedAnalysisPanel() {
 
         <div>
           <h3>Mixed Circuit Workspace</h3>
-          <p>Analyze series and parallel resistor combinations.</p>
+          <p>Build and analyze custom nested series-parallel networks.</p>
         </div>
 
         <span className="circuit-builder-status">
@@ -111,8 +466,8 @@ function MixedAnalysisPanel() {
           <div className="waveform-section-heading">
             <Zap size={19} />
             <div>
-              <h3>Circuit Configuration</h3>
-              <p>R1 in series with R2 and R3 in parallel</p>
+              <h3>Dynamic Network Editor</h3>
+              <p>Build your own resistor network</p>
             </div>
           </div>
 
@@ -125,54 +480,43 @@ function MixedAnalysisPanel() {
             type="number"
             min="0"
             step="0.1"
-            value={values.voltage}
-            onChange={(event) =>
-              updateValue('voltage', event.target.value)
-            }
+            value={voltage}
+            onChange={(event) => updateVoltage(event.target.value)}
             placeholder="Enter supply voltage"
           />
 
-          <div className="circuit-resistor-heading">
-            <div>
-              <h3>Resistor Values</h3>
-              <p>Adjust each resistor independently</p>
-            </div>
+          <div
+            className="mixed-network-stats"
+            aria-label={`${resistorCount} resistors and ${groupCount} groups`}
+          >
+            <span className="mixed-network-stat">
+              {resistorCount} Resistors
+            </span>
+            <span className="mixed-network-stat">
+              {groupCount} Groups
+            </span>
           </div>
 
-          {fields.map((field) => (
-            <div className="circuit-resistor-row" key={field.key}>
-              <div className="circuit-resistor-symbol">
-                <Zap size={17} />
-              </div>
-
-              <div className="circuit-resistor-input">
-                <label>{field.label}</label>
-
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={values[field.key]}
-                  onChange={(event) =>
-                    updateValue(field.key, event.target.value)
-                  }
-                  placeholder="Resistance in ohms"
-                />
-              </div>
-
-              <span className="circuit-ohm-label">Ω</span>
-            </div>
-          ))}
+          <NetworkNodeEditor
+            node={network}
+            network={network}
+            onUpdate={updateNodeData}
+            onRemove={handleRemove}
+            canRemove={false}
+            isRoot
+          />
 
           <div className="circuit-action-buttons">
             <button
+              type="button"
               className="circuit-analyze-button"
               onClick={handleAnalyze}
             >
-              <Play size={16} /> Analyze Circuit
+              <Play size={16} /> Analyze Network
             </button>
 
             <button
+              type="button"
               className="circuit-reset-button"
               onClick={resetCircuit}
             >
@@ -193,63 +537,19 @@ function MixedAnalysisPanel() {
             <div className="waveform-section-heading">
               <Activity size={19} />
               <div>
-                <h3>Mixed Circuit Schematic</h3>
-                <p>Series-parallel network representation</p>
+                <h3>Network Topology</h3>
+                <p>Live representation of your network structure</p>
               </div>
             </div>
 
-            <svg
-              viewBox="0 0 520 270"
-              className="circuit-schematic"
-              role="img"
-              aria-label="R1 in series with R2 and R3 in parallel"
-            >
-              <g
-                fill="none"
-                stroke="#60adff"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {/* Source and series path */}
-                <path d="M35 130 H95" />
-                <path d="M95 130 l8 -12 l12 24 l12 -24 l12 24 l8 -12 H185" />
-
-                {/* Parallel network rails */}
-                <path d="M185 130 V65 H245" />
-                <path d="M185 130 V195 H245" />
-
-                {/* Parallel resistors */}
-                <path d="M245 65 l8 -12 l12 24 l12 -24 l12 24 l8 -12 H365" />
-                <path d="M245 195 l8 -12 l12 24 l12 -24 l12 24 l8 -12 H365" />
-
-                {/* Return rail and source connection */}
-                <path d="M365 65 V195" />
-                <path d="M365 130 H455 V220 H35 V130" />
-              </g>
-
-              <g fill="#b8d8fa" fontSize="13">
-                <text x="140" y="100" textAnchor="middle">R1</text>
-                <text x="305" y="40" textAnchor="middle">R2</text>
-                <text x="305" y="170" textAnchor="middle">R3</text>
-              </g>
-
-              <g fill="#e9b96d">
-                <circle cx="185" cy="130" r="4" />
-                <circle cx="365" cy="130" r="4" />
-              </g>
-
-              <g fill="#91a4bd" fontSize="12">
-                <text x="35" y="105">DC Source: {values.voltage || 0} V</text>
-                <text x="275" y="250" textAnchor="middle">
-                  R1 SERIES (R2 || R3)
-                </text>
-              </g>
-            </svg>
-
-            <p className="circuit-schematic-caption">
-              R1 is connected in series with a parallel combination of R2 and R3.
-            </p>
+            <div className="mixed-topology-summary">
+              <span className="mixed-topology-label">Network expression</span>
+              <code>{createNetworkSummary(network)}</code>
+              <p>
+                This is a live topology summary of your configured network,
+                not a physical circuit schematic.
+              </p>
+            </div>
           </section>
 
           <section className="panel circuit-results-panel">
@@ -297,6 +597,13 @@ function MixedAnalysisPanel() {
                   Resistor Breakdown
                 </h4>
 
+                <div className="mixed-breakdown-header">
+                  <span>Resistor</span>
+                  <span>Voltage</span>
+                  <span>Current</span>
+                  <span>Power</span>
+                </div>
+
                 {results.resistors.map((resistor) => (
                   <div
                     className="circuit-breakdown-row"
@@ -314,8 +621,8 @@ function MixedAnalysisPanel() {
                 <Activity size={32} />
                 <h4>Awaiting analysis</h4>
                 <p>
-                  Configure your resistor values and select Analyze Circuit
-                  to calculate the network.
+                  Configure your network and select Analyze Network
+                  to calculate its electrical parameters.
                 </p>
               </div>
             )}
