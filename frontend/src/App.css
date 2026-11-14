@@ -2646,3 +2646,84 @@ h1 span { color: #70b5ff; }
     align-items: flex-start;
   }
 }
+
+
+/* ===== AC CIRCUIT ANALYZER ===== */
+
+.ac-page {
+  animation: componentFadeIn 0.25s ease;
+}
+
+.ac-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px;
+  margin-bottom: 20px;
+  background: #111c30;
+  border: 1px solid #26354d;
+  border-radius: 11px;
+}
+
+.ac-info-banner h3 {
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+
+.ac-info-banner p {
+  color: #91a0b7;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ac-reset-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid #31415a;
+  border-radius: 8px;
+  background: #16243a;
+  color: #a8bdd5;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ac-reset-button:hover {
+  background: #20334d;
+}
+
+.ac-result-highlight {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 18px;
+  margin-bottom: 12px;
+  border: 1px solid #285b55;
+  border-radius: 9px;
+  background: #122c30;
+}
+
+.ac-result-highlight > span {
+  color: #91b9b4;
+  font-size: 11px;
+}
+
+.ac-result-highlight strong {
+  color: #66e2b8;
+  font-size: 27px;
+}
+
+.ac-result-highlight strong small {
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .ac-info-banner {
+    align-items: flex-start;
+  }
+}
