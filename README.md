@@ -1,116 +1,78 @@
-# CircuitSage AI ⚡
 
-### Engineering Intelligence & Circuit Analysis Workspace
+# CircuitSage AI
 
-CircuitSage AI is a web-based engineering workspace designed to help students and electronics enthusiasts explore electronic components, visualize electrical waveforms, and perform circuit calculations through an interactive interface.
+**AI-Powered Engineering Intelligence Workspace**
 
-The project combines a React frontend with a Python FastAPI backend to provide practical electrical engineering tools.
+CircuitSage AI is a web-based engineering workspace designed to simplify electrical circuit calculations, analyze complex circuits, visualize circuit behavior, and support electrical engineering learning through interactive tools and lessons.
 
-## 🚀 Features
+The platform combines circuit analysis engines, interactive circuit schematics, engineering documentation, and a dedicated Learning Center in one workspace.
+
+---
+
+## Features
 
 ### 1. Circuit Analyzer
-- Ohm's Law calculator.
-- Calculate voltage, current, resistance, and power.
-- FastAPI-powered circuit calculation.
+- Ohm's Law calculations.
+- Voltage, current, resistance, and power calculations.
 - Input validation and error handling.
+- Real-time calculation results.
+- Interactive circuit analysis interface.
 
-### 2. Electronic Component Library
-- Interactive electronic component catalogue.
-- Search components by name and description.
-- Filter components by category.
-- View specifications, descriptions, and applications.
-- Includes resistors, capacitors, inductors, diodes, transistors, MOSFETs, and sensors.
+### 2. Advanced Circuit Analysis
+- Modified Nodal Analysis (MNA).
+- Mesh Current Analysis.
+- Kirchhoff's Current Law (KCL).
+- Kirchhoff's Voltage Law (KVL).
+- Series and parallel circuit analysis.
+- Mixed series-parallel circuit analysis.
+- Nested circuit topology support.
+- Equivalent resistance calculation.
+- Node voltage and branch current calculation.
+- Power calculation and power balance verification.
+- Circuit connectivity validation.
 
-### 3. Waveform Studio
-- Generate and visualize electrical waveforms.
-- Supported waveforms:
-  - Sine wave
-  - Square wave
-  - Triangle wave
-  - Sawtooth wave
-- Interactive controls for:
-  - Amplitude
-  - Frequency
-  - Phase
-  - DC offset
-  - Number of cycles
-- Live waveform visualization using SVG.
+### 3. Circuit Visualization
+- Interactive circuit schematics.
+- Series and parallel circuit layouts.
+- Dynamic mixed-circuit visualization.
+- Nested series-parallel circuit structures.
+- Resistor resistance, current, voltage, and power labels.
+- Current direction indicators.
+- Calculated electrical values displayed on schematics.
 
-### 4. Circuit Builder
+### 4. Waveform Studio
+- Interactive waveform exploration.
+- Waveform generation and parameter adjustment.
+- Visual representation of electrical signals.
 
-An interactive circuit analysis workspace offering four analysis modes.
+### 5. Engineering Learning Center
+- Interactive electrical engineering lessons.
+- Electrical fundamentals: voltage, current, resistance, and power.
+- Ohm's Law with formulas and worked numerical examples.
+- Series and parallel circuit concepts.
+- Kirchhoff's Current Law (KCL) and Voltage Law (KVL).
+- Formula cards with explanations and units.
+- Multiple-choice knowledge checks with instant feedback.
+- Responsive lesson catalogue and lesson pages.
 
-**Basic Analysis**
-- Create basic DC resistor networks.
-- Supports series and parallel connections.
-- Add and remove resistors dynamically.
-- Calculate equivalent resistance, total current, total power, individual resistor voltage drops, currents, and power.
-- Live series and parallel circuit schematic visualization.
-- Display calculated total current and individual resistor current.
-- Display individual resistor voltage drops and resistance values.
-- Visual branch-current direction indicators.
-- Automatically clear stale electrical values when circuit inputs change.
-- Includes predefined series and parallel circuit examples.
+### 6. Component Library
+- Engineering component reference section.
+- Electrical component information and learning resources.
 
-**Nodal Analysis**
-- Analyze DC circuits using Modified Nodal Analysis (MNA).
-- Supports resistors and ideal independent DC voltage sources.
-- Calculate node voltages.
-- Calculate resistor branch currents and power.
-- Calculate voltage source currents and power.
-- Verify Kirchhoff's Current Law (KCL).
-- Check electrical power balance.
-- Includes single-node, two-node, and voltage-divider examples.
-- Detects circuit nodes disconnected from the reference ground.
+### 7. Backend Health Monitoring
+- FastAPI backend integration.
+- Backend health status monitoring.
+- Automatic health checks.
+- API error handling and input validation.
 
-**Mesh Analysis**
-- Analyze planar DC circuits using Kirchhoff's Voltage Law (KVL).
-- Supports multiple meshes and shared resistor branches.
-- Supports ideal independent DC voltage sources.
-- Calculate mesh currents and resistor branch currents.
-- Calculate voltage drops and resistor power.
-- Verify total resistor power against source power supplied.
-- Includes single-mesh, two-mesh, and three-mesh examples.
+---
 
-**Mixed Analysis**
-- Analyze nested series-parallel DC resistor networks.
-- Dynamically create nested series and parallel groups.
-- Add and remove resistors and nested groups through the topology editor.
-- Change group connection types between series and parallel.
-- Display a recursive mixed series-parallel circuit schematic.
-- Visualize nested series and parallel branches with connecting wires.
-- Display resistor resistance, calculated current, voltage drop, and power.
-- Show conventional current direction using visual arrows.
-- Display total network current and clear calculated values when inputs change.
-- Calculate equivalent resistance, total current, and total power.
-- Calculate individual resistor voltage drops, currents, and power.
-- Validate resistor values, supply voltage, network structure, and duplicate resistor names.
-- Reset the network to its default configuration.
-
-**Numerical Solver and Electrical Verification**
-- Shared linear-system solver using Gaussian elimination with scaled partial pivoting.
-- Matrix and input validation.
-- Detection of singular or numerically unstable systems.
-- Ground-connectivity validation in nodal analysis.
-- KCL residual verification in nodal analysis.
-- Power balance verification in nodal and mesh analysis.
-- Numerical range validation in circuit calculations.
-
-**Current Limitations**
-- The advanced analysis engines currently support DC resistive networks and ideal independent voltage sources.
-- Current sources, dependent sources, capacitors, inductors, and semiconductor device models are not currently supported by the advanced circuit analysis engines.
-- AC analysis and transient analysis are not currently supported.
-- Mesh analysis requires the user to define mesh branches and their directions explicitly.
-- Circuit Builder is not yet a general-purpose schematic-based circuit simulator.
-
-## 🛠️ Technology Stack
+## Tech Stack
 
 ### Frontend
 - React 19
 - Vite
 - JavaScript
-- HTML5
-- CSS3
 - Tailwind CSS
 - Lucide React
 - Axios
@@ -121,234 +83,332 @@ An interactive circuit analysis workspace offering four analysis modes.
 - Uvicorn
 - Pydantic
 
-### Testing
+### Testing and Development
 - Vitest
 - ESLint
-- Automated JavaScript unit tests
+- Vite Build
 
-### Development Tools
-- Visual Studio Code
-- Git
-- GitHub
-- Ubuntu
+---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 CircuitSage-AI/
 │
 ├── backend/
 │   ├── main.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── venv/
 │
 ├── frontend/
+│   ├── public/
+│   │
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── CircuitBuilder.jsx
 │   │   │   ├── CircuitSchematic.jsx
-│   │   │   ├── NodalAnalysisPanel.jsx
-│   │   │   ├── MeshAnalysisPanel.jsx
+│   │   │   ├── LearningCenter.jsx
 │   │   │   ├── MixedAnalysisPanel.jsx
 │   │   │   ├── MixedCircuitSchematic.jsx
-│   │   │   ├── ComponentLibrary.jsx
-│   │   │   └── WaveformStudio.jsx
-│   │   │
-│   │   ├── circuit/
-│   │   │   ├── circuitEngine.js
-│   │   │   ├── mixedCircuitEngine.js
-│   │   │   └── __tests__/
-│   │   │       ├── circuitEngine.test.js
-│   │   │       └── mixedCircuitEngine.test.js
+│   │   │   ├── NodalAnalysisPanel.jsx
+│   │   │   └── MeshAnalysisPanel.jsx
 │   │   │
 │   │   ├── advanced-circuit/
 │   │   │   ├── advancedCircuitEngine.js
-│   │   │   ├── meshAnalysisEngine.js
 │   │   │   ├── linearSolver.js
-│   │   │   └── __tests__/
-│   │   │       ├── advancedCircuitEngine.test.js
-│   │   │       ├── circuitValidation.test.js
-│   │   │       ├── linearSolver.test.js
-│   │   │       └── meshAnalysisEngine.test.js
+│   │   │   └── meshAnalysisEngine.js
 │   │   │
-│   │   ├── data/
-│   │   │   └── components.js
-│   │   │
-│   │   ├── waveform/
-│   │   │   └── waveformEngine.js
+│   │   ├── circuit/
+│   │   │   ├── circuitEngine.js
+│   │   │   └── mixedCircuitEngine.js
 │   │   │
 │   │   ├── App.jsx
 │   │   ├── App.css
-│   │   ├── index.css
 │   │   └── main.jsx
 │   │
 │   ├── package.json
 │   └── vite.config.js
 │
-├── .gitignore
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
-## ⚙️ Installation and Setup
+---
+
+## Installation and Setup
 
 ### Prerequisites
+
+Make sure the following tools are installed:
+
+- Node.js
+- npm
 - Python 3
-- Node.js and npm
 - Git
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Azeem-Parmar/CircuitSage-AI.git
-
 cd CircuitSage-AI
 ```
 
-### 2. Backend Setup
+### 2. Frontend Setup
 
-Create and activate a virtual environment:
+Open a terminal and navigate to the frontend directory:
 
 ```bash
-python3 -m venv backend/venv
+cd frontend
+```
 
-source backend/venv/bin/activate
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The frontend will normally run at:
+
+```text
+http://localhost:5173
+```
+
+### 3. Backend Setup
+
+Open another terminal from the project root:
+
+```bash
+cd backend
+```
+
+Create a virtual environment:
+
+```bash
+python3 -m venv venv
+```
+
+Activate the virtual environment:
+
+**Linux / Ubuntu:**
+
+```bash
+source venv/bin/activate
 ```
 
 Install backend dependencies:
 
 ```bash
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
 Start the FastAPI server:
 
 ```bash
-python -m uvicorn backend.main:app --reload
+uvicorn main:app --reload
 ```
 
-Backend runs at:
+The backend will run at:
 
-`http://127.0.0.1:8000`
+```text
+http://127.0.0.1:8000
+```
 
 API documentation:
 
-`http://127.0.0.1:8000/docs`
-
-### 3. Frontend Setup
-
-Open a separate terminal:
-
-```bash
-cd CircuitSage-AI/frontend
-
-npm install
-
-npm run dev
+```text
+http://127.0.0.1:8000/docs
 ```
-
-Frontend runs at the local URL displayed by Vite, usually:
-
-`http://localhost:5173`
-
-## 🔌 Backend API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/` | Welcome endpoint |
-| GET | `/health` | Backend health check |
-| POST | `/api/analyze` | Ohm's Law circuit analysis |
-
-## 📐 Electrical Engineering Concepts
-
-The project currently implements calculations based on:
-
-- Ohm's Law
-- Electrical Power
-- Series and Parallel Resistance
-- Mixed Series-Parallel Networks
-- Voltage Division
-- Current Distribution
-- Kirchhoff's Current Law (KCL)
-- Kirchhoff's Voltage Law (KVL)
-- Modified Nodal Analysis
-- Mesh Current Analysis
-- Gaussian Elimination with Scaled Partial Pivoting
-- Basic Waveform Mathematics
-- Electrical Power Balance
-
-## 🧪 Testing and Validation
-
-The frontend has undergone automated and manual testing.
-
-**Automated testing**
-- 58 automated tests across 6 test files.
-- Basic circuit engine tests.
-- Mixed circuit engine tests.
-- Advanced circuit analysis engine tests.
-- Mesh analysis engine tests.
-- Shared numerical solver tests.
-- Circuit input and ground-connectivity validation tests.
-
-**Quality checks**
-- ESLint validation.
-- Vitest test execution.
-- Vite production build verification.
-
-**Manual testing**
-- Basic series and parallel circuit calculations.
-- Predefined basic circuit examples.
-- Nodal analysis and node voltage verification.
-- Mesh current and shared resistor calculations.
-- Predefined single, two, and three-mesh examples.
-- Mixed series-parallel circuit calculations.
-- Invalid voltage and resistor input validation.
-- Reset behavior and result clearing.
-- KCL and electrical power balance checks.
-- Ground-connectivity validation.
-- Waveform generation and parameter testing.
-- Desktop and mobile responsive interface testing.
-
-Run the frontend checks:
-
-```bash
-cd frontend
-
-npm run lint
-
-npm test -- --run
-
-npm run build
-```
-
-## 🗺️ Development Roadmap
-
-- [x] Project setup and dashboard
-- [x] Ohm's Law Circuit Analyzer
-- [x] Electronic Component Library
-- [x] Interactive Waveform Studio
-- [x] Basic Series and Parallel Circuit Builder
-- [x] Automated unit testing
-- [x] Modified Nodal Analysis
-- [x] Mesh Current Analysis
-- [x] Mixed Series-Parallel Circuit Analysis
-- [x] KCL and KVL-based circuit calculations
-- [x] Electrical power balance verification
-- [x] Shared numerical solver and circuit validation
-- [x] Predefined circuit examples
-- [x] Basic and mixed circuit input validation
-- [x] Responsive circuit analysis interface
-- [ ] General-purpose advanced circuit simulation
-- [ ] AC circuit analysis
-- [ ] Transient analysis
-- [ ] Online deployment
-
-## 👨‍💻 Author
-
-**Azeem Parmar**
-
-GitHub: https://github.com/Azeem-Parmar
-
-Project Repository: https://github.com/Azeem-Parmar/CircuitSage-AI
 
 ---
 
-*CircuitSage AI — Making Electrical Engineering More Interactive.* ⚡
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Backend welcome message |
+| GET | `/health` | Backend health status |
+| POST | `/api/analyze` | Basic circuit analysis |
+
+### Example API Request
+
+**Endpoint:**
+
+```text
+POST /api/analyze
+```
+
+**Request Body:**
+
+```json
+{
+  "voltage": 12,
+  "resistance": 100
+}
+```
+
+**Expected Calculation:**
+
+- Voltage = 12 V
+- Resistance = 100 Ω
+- Current = 0.12 A
+- Power = 1.44 W
+
+---
+
+## Circuit Analysis
+
+### 1. Ohm's Law
+
+The basic circuit analyzer uses:
+
+\[
+V = I \times R
+\]
+
+Where:
+
+- V = Voltage (Volts)
+- I = Current (Amperes)
+- R = Resistance (Ohms)
+
+Power calculation:
+
+\[
+P = V \times I
+\]
+
+### 2. Nodal Analysis
+
+Nodal analysis uses Modified Nodal Analysis (MNA) to calculate node voltages and branch currents in electrical circuits.
+
+### 3. Mesh Analysis
+
+Mesh analysis uses Kirchhoff's Voltage Law to calculate mesh currents in planar circuits.
+
+### 4. Mixed Circuit Analysis
+
+The mixed circuit engine supports recursively nested series-parallel networks.
+
+It calculates:
+
+- Equivalent resistance.
+- Total supply current.
+- Individual resistor current.
+- Voltage drop across each resistor.
+- Individual resistor power.
+- Total circuit power.
+
+---
+
+## Testing and Validation
+
+The frontend includes automated tests and development checks.
+
+Run the test suite:
+
+```bash
+npm run test:run
+```
+
+Run ESLint:
+
+```bash
+npm run lint
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+### Manual Testing
+
+The project has been tested for:
+
+- Basic Ohm's Law calculations.
+- Nodal analysis.
+- Mesh analysis.
+- Series and parallel circuits.
+- Nested mixed-circuit topology.
+- Circuit schematic visualization.
+- Resistor value editing and topology changes.
+- Backend health monitoring.
+- API input validation and error handling.
+- Engineering Learning Center navigation.
+- Electrical fundamentals and Ohm's Law lessons.
+- Series and parallel circuit lessons.
+- KCL and KVL lesson content.
+- Knowledge-check answer validation.
+- Desktop and mobile responsiveness.
+
+---
+
+## Development Roadmap
+
+### Completed
+
+- [x] React and Vite frontend setup.
+- [x] FastAPI backend setup.
+- [x] Basic circuit analyzer.
+- [x] Ohm's Law calculations.
+- [x] Modified Nodal Analysis.
+- [x] Mesh Current Analysis.
+- [x] Gaussian elimination solver.
+- [x] KCL and KVL validation.
+- [x] Power balance verification.
+- [x] Circuit example presets.
+- [x] Input validation and error handling.
+- [x] Mixed series-parallel circuit analysis.
+- [x] Dynamic nested circuit topology editor.
+- [x] Interactive circuit schematics.
+- [x] Mixed circuit schematic visualization.
+- [x] Backend health monitoring.
+- [x] Frontend and backend integration.
+- [x] Engineering Learning Center.
+- [x] Interactive electrical engineering lessons.
+- [x] Formula explanations and worked examples.
+- [x] Interactive knowledge checks.
+- [x] Responsive Learning Center interface.
+
+### Upcoming
+
+- [ ] Advanced circuit simulation improvements.
+- [ ] AC circuit analysis.
+- [ ] Transient circuit analysis.
+- [ ] Additional engineering components and reference resources.
+- [ ] Further UI and performance improvements.
+- [ ] Final integration and project-wide testing.
+- [ ] Deployment.
+
+---
+
+## Project Status
+
+CircuitSage AI is under active development.
+
+The basic circuit analysis engine, advanced circuit solvers, mixed-circuit editor, schematic visualization, backend integration, and Engineering Learning Center have been implemented.
+
+Further simulation capabilities, testing, refinement, and deployment are planned.
+
+---
+
+## Author
+
+**Azeem Parmar**
+
+B.Tech – Electronics and Communication Engineering
+
+GitHub: [Azeem-Parmar](https://github.com/Azeem-Parmar)
+
+Project Repository: [CircuitSage-AI](https://github.com/Azeem-Parmar/CircuitSage-AI)
+
+---
+
+**CircuitSage AI – Simplifying Circuit Analysis and Engineering Learning.**
