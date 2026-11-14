@@ -2727,3 +2727,139 @@ h1 span { color: #70b5ff; }
     align-items: flex-start;
   }
 }
+
+
+/* ===== DAY 15 ADVANCED AC ANALYZER ===== */
+
+.advanced-ac-page {
+  animation: componentFadeIn 0.25s ease;
+}
+
+.advanced-ac-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+
+.advanced-ac-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 15px;
+  border: 1px solid #293a53;
+  border-radius: 8px;
+  background: #111c30;
+  color: #a8b8ce;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.advanced-ac-tab:hover {
+  background: #1a2b43;
+  border-color: #49678e;
+}
+
+.advanced-ac-tab.active {
+  color: #8cc7ff;
+  background: #172d49;
+  border-color: #3989d6;
+  box-shadow: 0 0 0 1px rgba(57, 137, 214, 0.12);
+}
+
+.advanced-ac-field {
+  margin-bottom: 15px;
+}
+
+.advanced-ac-field > label {
+  display: block;
+  margin-bottom: 7px;
+  color: #aabbd1;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.advanced-ac-field select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #293a53;
+  border-radius: 7px;
+  background: #111c30;
+  color: #e0e9f5;
+  font-size: 12px;
+  outline: none;
+}
+
+.advanced-ac-field select:focus {
+  border-color: #3989d6;
+}
+
+.advanced-ac-table-wrap {
+  margin-top: 20px;
+}
+
+.advanced-ac-table-wrap h4 {
+  margin: 0 0 12px;
+  color: #dce8f8;
+  font-size: 13px;
+}
+
+.advanced-ac-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #293a53;
+  border-radius: 8px;
+}
+
+.advanced-ac-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.advanced-ac-table th {
+  padding: 12px 10px;
+  background: #192941;
+  color: #a8c8ec;
+  white-space: nowrap;
+}
+
+.advanced-ac-table td {
+  padding: 11px 10px;
+  border-top: 1px solid #25354b;
+  color: #c2d0e1;
+  font-variant-numeric: tabular-nums;
+}
+
+.advanced-ac-table tbody tr:hover {
+  background: #18283d;
+}
+
+@media (max-width: 700px) {
+  .advanced-ac-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .advanced-ac-tab {
+    justify-content: flex-start;
+    padding: 11px 9px;
+    font-size: 10px;
+  }
+
+  .advanced-ac-table {
+    min-width: 400px;
+  }
+}
+
+@media (max-width: 380px) {
+  .advanced-ac-tabs {
+    grid-template-columns: 1fr;
+  }
+}
