@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Activity, LayoutDashboard, CircuitBoard, Cpu, BookOpen,
   Settings, Search, Bell, Plus, ArrowUpRight, Zap,
@@ -13,6 +13,7 @@ import CircuitBuilder from './components/CircuitBuilder';
 function App() {
   const [activeTab, setActiveTab] = useState('Overview');
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [backendStatus, setBackendStatus] = useState('checking');
   const [voltage, setVoltage] = useState('12');
   const [resistance, setResistance] = useState('100');
 
@@ -21,12 +22,77 @@ function App() {
   const [error, setError] = useState('');
 
   const [, setCalculated] = useState(false);
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkBackend = async () => {
+      try {
+        const response = await fetch(
+          'http://127.0.0.1:8000/health'
+        );
+
+        if (!response.ok) {
+          throw new Error('Backend unavailable');
+        }
+
+        const data = await response.json();
+
+        if (data.status !== 'healthy') {
+          throw new Error('Backend unhealthy');
+        }
+
+        if (isMounted) {
+          setBackendStatus('connected');
+        }
+      } catch {
+        if (isMounted) {
+          setBackendStatus('disconnected');
+        }
+      }
+    };
+
+    checkBackend();
+
+    const intervalId = setInterval(checkBackend, 15000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+
 
 
   const handleCalculate = async () => {
-    setLoading(true);
+    const voltageValue = Number(voltage);
+    const resistanceValue = Number(resistance);
+
     setError('');
     setResults(null);
+    setCalculated(false);
+
+    if (
+      voltage.trim() === '' ||
+      resistance.trim() === ''
+    ) {
+      setError('Please enter both voltage and resistance.');
+      return;
+    }
+
+    if (!Number.isFinite(voltageValue) || voltageValue < 0) {
+      setError('Voltage must be a valid non-negative number.');
+      return;
+    }
+
+    if (
+      !Number.isFinite(resistanceValue) ||
+      resistanceValue <= 0
+    ) {
+      setError('Resistance must be a valid number greater than zero.');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch(
@@ -35,11 +101,11 @@ function App() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
           },
           body: JSON.stringify({
-            voltage: Number(voltage),
-            resistance: Number(resistance),
+            voltage: voltageValue,
+            resistance: resistanceValue,
           }),
         }
       );
@@ -50,18 +116,26 @@ function App() {
         throw new Error(
           typeof data.detail === 'string'
             ? data.detail
-            : JSON.stringify(data.detail || 'API request failed')
+            : 'Circuit analysis request failed.'
         );
       }
 
-      setResults(data);
+      if (
+        !Number.isFinite(data.current) ||
+        !Number.isFinite(data.power)
+      ) {
+        throw new Error('Backend returned invalid calculation results.');
+      }
 
+      setResults(data);
+      setCalculated(true);
     } catch (err) {
       setError(err.message || 'Unable to connect to backend.');
     } finally {
       setLoading(false);
     }
   };
+
 
 
   const navigation = [
@@ -172,8 +246,31 @@ function App() {
               </div>
               <div className="stat-card">
                 <div className="stat-top"><span>Backend status</span><Activity size={19} /></div>
-                <h2>API Setup</h2>
-                <p><span className="green-text">connected</span><span>FastAPI backend operational</span></p>
+                <h2>
+                  {backendStatus === 'checking'
+                    ? 'Checking...'
+                    : backendStatus === 'connected'
+                      ? 'Online'
+                      : 'Offline'}
+                </h2>
+
+                <p>
+                  <span
+                    className={
+                      backendStatus === 'connected'
+                        ? 'green-text'
+                        : ''
+                    }
+                  >
+                    {backendStatus === 'checking'
+                      ? 'Checking connection'
+                      : backendStatus === 'connected'
+                        ? 'Connected'
+                        : 'Disconnected'}
+                  </span>
+
+                  <span>FastAPI backend status</span>
+                </p>
               </div>
             </section>
 
@@ -230,21 +327,39 @@ function App() {
               <section className="panel input-panel">
                 <div className="panel-heading"><div className="tool-icon blue"><Calculator size={21} /></div><div><h3>Ohm's Law Calculator</h3><p>Enter your circuit parameters</p></div></div>
                 <label>Voltage (V)</label>
-                <div className="field-wrap"><input type="number" min="0" value={voltage} onChange={e => { setVoltage(e.target.value); setResults(null); setError(''); }} /><span>VOLTS</span></div>
+                <div className="field-wrap">
+                  <input
+                    type="number"
+                    min="0"
+                    value={voltage}
+                    onChange={e => {
+                      setVoltage(e.target.value);
+                      setResults(null);
+                      setError('');
+                      setCalculated(false);
+                    }}
+                  />
+                  <span>VOLTS</span>
+                </div>
                 <label>Resistance (Ω)</label>
-                <div className="field-wrap"><input type="number" min="0" value={resistance} onChange={e => { setResistance(e.target.value); setCalculated(false); }} /><span>OHMS</span></div>
+                <div className="field-wrap">
+                  <input
+                    type="number"
+                    min="0"
+                    value={resistance}
+                    onChange={e => {
+                      setResistance(e.target.value);
+                      setResults(null);
+                      setError('');
+                      setCalculated(false);
+                    }}
+                  />
+                  <span>OHMS</span>
+                </div>
                 <button
                   className="primary-button calculate-button"
                   onClick={handleCalculate}
-                  disabled={
-                    loading ||
-                    !voltage ||
-                    !resistance ||
-                    !Number.isFinite(Number(voltage)) ||
-                    !Number.isFinite(Number(resistance)) ||
-                    Number(voltage) < 0 ||
-                    Number(resistance) <= 0
-                  }
+                  disabled={loading}
                 >
                   <Play size={16} />
                   {loading ? 'Analyzing...' : 'Calculate results'}
@@ -266,7 +381,13 @@ function App() {
                     <div className="empty-icon">
                       <Activity size={30} />
                     </div>
-                    <h3>Analysis Failed</h3>
+                    <h3>
+                      {error === 'Please enter both voltage and resistance.' ||
+                        error.startsWith('Voltage must') ||
+                        error.startsWith('Resistance must')
+                        ? 'Invalid Input'
+                        : 'Analysis Failed'}
+                    </h3>
                     <p>{error}</p>
                   </div>
                 ) : results ? (
@@ -311,32 +432,32 @@ function App() {
           </div>
         )}
 
-         {activeTab === 'Components' && (
-           <ComponentLibrary />
+        {activeTab === 'Components' && (
+          <ComponentLibrary />
         )}
 
-         {activeTab === 'Waveform Studio' && (
-           <WaveformStudio />
+        {activeTab === 'Waveform Studio' && (
+          <WaveformStudio />
         )}
 
-         {activeTab === 'Circuit Builder' && (
-           <CircuitBuilder />
+        {activeTab === 'Circuit Builder' && (
+          <CircuitBuilder />
         )}
 
 
-         {activeTab !== 'Overview' && 
-           activeTab !== 'Circuit Analyzer' &&
-           activeTab !== 'Components' &&
-           activeTab !== 'Waveform Studio' && 
-           activeTab !== 'Circuit Builder' &&  (
-          <div className="page-content placeholder-page">
-            <div className="eyebrow">CIRCUITSAGE AI / WORKSPACE</div>
-            <div className="placeholder-icon"><CircuitBoard size={35} /></div>
-            <h1>{activeTab}</h1>
-            <p>This module is planned for the next development stage.</p>
-            <button className="primary-button" onClick={openAnalyzer}>Go to Circuit Analyzer <ArrowUpRight size={17} /></button>
-          </div>
-        )}
+        {activeTab !== 'Overview' &&
+          activeTab !== 'Circuit Analyzer' &&
+          activeTab !== 'Components' &&
+          activeTab !== 'Waveform Studio' &&
+          activeTab !== 'Circuit Builder' && (
+            <div className="page-content placeholder-page">
+              <div className="eyebrow">CIRCUITSAGE AI / WORKSPACE</div>
+              <div className="placeholder-icon"><CircuitBoard size={35} /></div>
+              <h1>{activeTab}</h1>
+              <p>This module is planned for the next development stage.</p>
+              <button className="primary-button" onClick={openAnalyzer}>Go to Circuit Analyzer <ArrowUpRight size={17} /></button>
+            </div>
+          )}
 
         <footer className="footer">
           <span>© 2026 CircuitSage AI</span>
