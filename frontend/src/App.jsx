@@ -32,6 +32,7 @@ import CircuitBuilder from './components/CircuitBuilder';
 import LearningCenter from './components/LearningCenter';
 import ACCircuitAnalyzer from './ac-circuit/ACCircuitAnalyzer';
 import AdvancedACAnalyzer from './ac-circuit/AdvancedACAnalyzer';
+import ACSimulationStudio from './ac-circuit/ACSimulationStudio';
 
 function App() {
   const [activeTab, setActiveTab] = useState('Overview');
@@ -176,6 +177,7 @@ function App() {
     { name: 'Circuit Analyzer', icon: CircuitBoard },
     { name: 'AC Circuit Analyzer', icon: Activity },
     { name: 'Advanced AC Analysis', icon: Activity },
+    { name: 'AC Simulation Studio', icon: Waves },
     { name: 'Circuit Builder', icon: CircuitBoard },
     { name: 'Components', icon: Cpu },
     { name: 'Waveform Studio', icon: Waves },
@@ -778,6 +780,11 @@ function App() {
           <AdvancedACAnalyzer />
         )}
 
+        {/* AC SIMULATION STUDIO */}
+        {activeTab === 'AC Simulation Studio' && (
+          <ACSimulationStudio />
+        )}
+
         {/* COMPONENT LIBRARY */}
         {activeTab === 'Components' && (
           <ComponentLibrary />
@@ -803,6 +810,7 @@ function App() {
           activeTab !== 'Circuit Analyzer' &&
           activeTab !== 'AC Circuit Analyzer' &&
           activeTab !== 'Advanced AC Analysis' &&
+          activeTab !== 'AC Simulation Studio' &&
           activeTab !== 'Components' &&
           activeTab !== 'Waveform Studio' &&
           activeTab !== 'Circuit Builder' &&
