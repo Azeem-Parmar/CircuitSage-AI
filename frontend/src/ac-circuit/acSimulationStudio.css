@@ -521,3 +521,99 @@
     padding: 15px;
   }
 }
+
+/* Day 17: Frequency-response resonance analysis */
+
+.simulation-resonance {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #2b4564;
+  border-radius: 10px;
+  background: #101d30;
+}
+
+.simulation-resonance-status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.simulation-resonance-status.is-in-range {
+  color: #70dfb8;
+  border: 1px solid #286c58;
+  background: #12362e;
+}
+
+.simulation-resonance-status.is-out-range {
+  color: #f0c17b;
+  border: 1px solid #76562c;
+  background: #392b19;
+}
+
+.simulation-resonance-explanation {
+  margin: 0;
+  color: #b5c8df;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .simulation-resonance {
+    padding: 13px;
+  }
+
+  .simulation-resonance .simulation-chart-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Day 17: Frequency-response resonance analysis */
+
+.simulation-resonance {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #2b4564;
+  border-radius: 10px;
+  background: #101d30;
+}
+
+.simulation-resonance-status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.simulation-resonance-status.is-in-range {
+  color: #70dfb8;
+  border: 1px solid #286c58;
+  background: #12362e;
+}
+
+.simulation-resonance-status.is-out-range {
+  color: #f0c17b;
+  border: 1px solid #76562c;
+  background: #392b19;
+}
+
+.simulation-resonance-explanation {
+  margin: 0;
+  color: #b5c8df;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .simulation-resonance {
+    padding: 13px;
+  }
+
+  .simulation-resonance .simulation-chart-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -384,6 +384,59 @@ function ACSimulationStudio() {
                 <span>{responseData[responseData.length - 1].frequency.toFixed(2)} Hz</span>
               </div>
               <p className="simulation-note">Each curve is independently normalized to fit the same display area. Use the data table below for actual values.</p>
+
+              <section className="simulation-resonance">
+                <div className="simulation-chart-heading">
+                  <div>
+                    <h3>Resonance Analysis</h3>
+                    <p>Theoretical resonance and sampled sweep extrema</p>
+                  </div>
+                  <span className={`simulation-resonance-status ${results.frequencyResponse.resonanceInRange ? 'is-in-range' : 'is-out-range'}`}>
+                    {results.frequencyResponse.resonanceInRange
+                      ? 'Resonance in sweep'
+                      : 'Resonance outside sweep'}
+                  </span>
+                </div>
+
+                <p className="simulation-resonance-explanation">
+                  {topology === 'series'
+                    ? 'Series resonance produces minimum impedance and maximum source current.'
+                    : 'Parallel resonance produces maximum impedance and minimum source current.'}
+                </p>
+
+                <div className="simulation-metric-grid">
+                  <Metric
+                    label="Theoretical resonant frequency"
+                    value={results.frequencyResponse.resonantFrequency.toFixed(3)}
+                    unit="Hz"
+                  />
+                  <Metric
+                    label={`Minimum impedance at ${results.frequencyResponse.sampledExtrema.minimumImpedance.frequency.toFixed(2)} Hz`}
+                    value={results.frequencyResponse.sampledExtrema.minimumImpedance.value.toFixed(4)}
+                    unit="Ω"
+                  />
+                  <Metric
+                    label={`Maximum impedance at ${results.frequencyResponse.sampledExtrema.maximumImpedance.frequency.toFixed(2)} Hz`}
+                    value={results.frequencyResponse.sampledExtrema.maximumImpedance.value.toFixed(4)}
+                    unit="Ω"
+                  />
+                  <Metric
+                    label={`Minimum current at ${results.frequencyResponse.sampledExtrema.minimumCurrent.frequency.toFixed(2)} Hz`}
+                    value={results.frequencyResponse.sampledExtrema.minimumCurrent.value.toFixed(5)}
+                    unit="A"
+                  />
+                  <Metric
+                    label={`Maximum current at ${results.frequencyResponse.sampledExtrema.maximumCurrent.frequency.toFixed(2)} Hz`}
+                    value={results.frequencyResponse.sampledExtrema.maximumCurrent.value.toFixed(5)}
+                    unit="A"
+                  />
+                </div>
+
+                <p className="simulation-note">
+                  Sampled extrema are taken from the calculated frequency points and may differ from exact theoretical resonance.
+                </p>
+              </section>
+
               <div className="simulation-table-wrap">
                 <table>
                   <thead><tr><th>Frequency (Hz)</th><th>Impedance (Ω)</th><th>Current (A)</th><th>Power factor</th></tr></thead>

@@ -48,7 +48,19 @@ export function analyzeParallelRLC({
     const inductorCurrent = voltage / inductiveReactance;
     const capacitorCurrent = voltage / capacitiveReactance;
 
-    const netReactiveCurrent = capacitorCurrent - inductorCurrent;
+    const rawNetReactiveCurrent =
+        capacitorCurrent - inductorCurrent;
+
+    // Use a scale-aware tolerance to handle floating-point
+    // cancellation near parallel resonance.
+    const reactiveCurrentTolerance =
+        32 * Number.EPSILON *
+        Math.max(capacitorCurrent, inductorCurrent);
+
+    const netReactiveCurrent =
+        Math.abs(rawNetReactiveCurrent) <= reactiveCurrentTolerance
+            ? 0
+            : rawNetReactiveCurrent;
 
     const totalCurrent = Math.hypot(
         resistorCurrent,
@@ -69,7 +81,9 @@ export function analyzeParallelRLC({
 
     const realPower = voltage * resistorCurrent;
     const apparentPower = voltage * totalCurrent;
-    const reactivePower = -voltage * netReactiveCurrent;
+    const reactivePower = netReactiveCurrent === 0
+        ? 0
+        : -voltage * netReactiveCurrent;
 
     const admittance = 1 / impedance;
 
@@ -96,7 +110,7 @@ export function analyzeParallelRLC({
         apparentPower,
         reactivePower,
         circuitType:
-            Math.abs(netReactiveCurrent) < 1e-12
+            netReactiveCurrent === 0
                 ? 'Resistive'
                 : netReactiveCurrent > 0
                     ? 'Capacitive'
@@ -366,7 +380,80 @@ export function analyzeFrequencyResponse({
         frequencyData.push(point);
     }
 
-    return {
+    // Theoretical resonance for ideal series and parallel RLC circuits.
+    const resonantFrequency =
+        1 / (TWO_PI * Math.sqrt(inductance * capacitance));
+
+    const resonanceInRange =
+        resonantFrequency >= startFrequency &&
+        resonantFrequency <= endFrequency;
+
+    // Find extrema from the actual sampled frequency points.
+    const sampledExtrema = frequencyData.reduce(
+        (extrema, point) => {
+            if (
+                point.impedance <
+                extrema.minimumImpedance.value
+            ) {
+                extrema.minimumImpedance = {
+                    frequency: point.frequency,
+                    value: point.impedance
+                };
+            }
+
+            if (
+                point.impedance >
+                extrema.maximumImpedance.value
+            ) {
+                extrema.maximumImpedance = {
+                    frequency: point.frequency,
+                    value: point.impedance
+                };
+            }
+
+            if (
+                point.current <
+                extrema.minimumCurrent.value
+            ) {
+                extrema.minimumCurrent = {
+                    frequency: point.frequency,
+                    value: point.current
+                };
+            }
+
+            if (
+                point.current >
+                extrema.maximumCurrent.value
+            ) {
+                extrema.maximumCurrent = {
+                    frequency: point.frequency,
+                    value: point.current
+                };
+            }
+
+            return extrema;
+        },
+        {
+            minimumImpedance: {
+                frequency: frequencyData[0].frequency,
+                value: frequencyData[0].impedance
+            },
+            maximumImpedance: {
+                frequency: frequencyData[0].frequency,
+                value: frequencyData[0].impedance
+            },
+            minimumCurrent: {
+                frequency: frequencyData[0].frequency,
+                value: frequencyData[0].current
+            },
+            maximumCurrent: {
+                frequency: frequencyData[0].frequency,
+                value: frequencyData[0].current
+            }
+        }
+    );
+
+    const result = {
         topology,
         voltage,
         resistance,
@@ -375,7 +462,18 @@ export function analyzeFrequencyResponse({
         startFrequency,
         endFrequency,
         points,
-        frequencyData
+        frequencyData,
+        resonantFrequency,
+        resonanceInRange,
+        resonanceBehavior: topology === 'series'
+            ? 'Minimum impedance and maximum current'
+            : 'Maximum impedance and minimum current',
+        sampledExtrema
     };
+
+    return validateFiniteResults({
+        resonantFrequency,
+        ...result
+    });
 }
 

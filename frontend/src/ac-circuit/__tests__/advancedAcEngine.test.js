@@ -75,6 +75,39 @@ describe('Advanced AC Circuit Engine', () => {
             expect(result.reactivePower).toBeCloseTo(0, 8);
         });
 
+        it('classifies tiny but significant reactive current correctly', () => {
+            const result = analyzeParallelRLC({
+                voltage: 1e-12,
+                frequency: 30,
+                resistance: 120,
+                inductance: 0.1,
+                capacitance: 100e-6
+            });
+
+            expect(result.netReactiveCurrent).toBeLessThan(0);
+            expect(result.circuitType).toBe('Inductive');
+            expect(result.reactivePower).toBeGreaterThan(0);
+        });
+
+        it('treats floating-point cancellation at resonance as resistive', () => {
+            const inductance = 0.1;
+            const capacitance = 100e-6;
+            const frequency =
+                1 / (2 * Math.PI * Math.sqrt(inductance * capacitance));
+
+            const result = analyzeParallelRLC({
+                voltage: 120,
+                frequency,
+                resistance: 120,
+                inductance,
+                capacitance
+            });
+
+            expect(result.netReactiveCurrent).toBe(0);
+            expect(result.circuitType).toBe('Resistive');
+            expect(result.reactivePower).toBe(0);
+        });
+
         it('rejects invalid parallel circuit inputs', () => {
             expect(() =>
                 analyzeParallelRLC({
@@ -265,6 +298,74 @@ describe('Advanced AC Circuit Engine', () => {
             for (const point of result.frequencyData) {
                 expect(point.impedance).toBeGreaterThan(0);
                 expect(point.current).toBeGreaterThan(0);
+            }
+        });
+
+        it('reports series resonance and sampled extrema', () => {
+            const result = analyzeFrequencyResponse({
+                ...input,
+                startFrequency: 20,
+                endFrequency: 100,
+                points: 81,
+                topology: 'series'
+            });
+
+            expect(result.resonantFrequency).toBeCloseTo(50.3292, 3);
+            expect(result.resonanceInRange).toBe(true);
+            expect(result.resonanceBehavior).toContain('Minimum impedance');
+
+            expect(result.sampledExtrema.minimumImpedance.value)
+                .toBeLessThan(result.sampledExtrema.maximumImpedance.value);
+
+            expect(result.sampledExtrema.maximumCurrent.value)
+                .toBeGreaterThan(result.sampledExtrema.minimumCurrent.value);
+        });
+
+        it('reports parallel resonance with maximum impedance', () => {
+            const result = analyzeFrequencyResponse({
+                ...input,
+                startFrequency: 20,
+                endFrequency: 100,
+                points: 81,
+                topology: 'parallel'
+            });
+
+            expect(result.resonanceInRange).toBe(true);
+            expect(result.resonanceBehavior).toContain('Maximum impedance');
+
+            expect(result.sampledExtrema.maximumImpedance.value)
+                .toBeGreaterThan(result.sampledExtrema.minimumImpedance.value);
+
+            expect(result.sampledExtrema.minimumCurrent.value)
+                .toBeLessThan(result.sampledExtrema.maximumCurrent.value);
+        });
+
+        it('identifies when resonance is outside the sweep range', () => {
+            const result = analyzeFrequencyResponse({
+                ...input,
+                startFrequency: 100,
+                endFrequency: 200,
+                topology: 'series'
+            });
+
+            expect(result.resonanceInRange).toBe(false);
+            expect(result.resonantFrequency).toBeCloseTo(50.3292, 3);
+        });
+
+        it('reports valid frequencies for all sampled extrema', () => {
+            const result = analyzeFrequencyResponse({
+                ...input,
+                topology: 'series'
+            });
+
+            for (const extremum of Object.values(result.sampledExtrema)) {
+                expect(extremum.frequency).toBeGreaterThanOrEqual(
+                    result.startFrequency
+                );
+                expect(extremum.frequency).toBeLessThanOrEqual(
+                    result.endFrequency
+                );
+                expect(Number.isFinite(extremum.value)).toBe(true);
             }
         });
 
