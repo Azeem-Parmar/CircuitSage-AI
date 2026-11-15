@@ -617,3 +617,104 @@
     flex-direction: column;
   }
 }
+
+/* Day 18 - Engineering Insights */
+.simulation-insights {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #293d56;
+}
+
+.simulation-insight-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.simulation-insight {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #293f5b;
+  border-radius: 9px;
+  background: #101e31;
+}
+
+.simulation-insight strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #a9d4ff;
+  font-size: 12px;
+}
+
+.simulation-insight p {
+  margin: 0;
+  color: #9aacc2;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .simulation-insight-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Day 18 - Phasor Details Layout */
+.simulation-phasor-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.simulation-phasor-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1px solid #293f5b;
+  border-radius: 8px;
+  background: #101e31;
+}
+
+.simulation-phasor-row > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #a9bad0;
+  font-size: 11px;
+}
+
+.simulation-phasor-row > span i {
+  display: inline-block;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.simulation-phasor-row > strong {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+  color: #e6edf7;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.simulation-phasor-row > strong small {
+  color: #91a4bd;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .simulation-phasor-list {
+    grid-template-columns: 1fr;
+  }
+}
